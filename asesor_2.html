@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Occasus — Asesor Legal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#ECECE9; --frame:#FFFFFF; --ink:#141414; --muted:#6B6B6B; --muted-2:#9A9A96;
+    --line:#141414; --line-soft:#DCDCD8; --grid-line:rgba(20,20,20,.07);
+    --accent:#FF5A2E; --accent-soft:#FFE7DE;
+    --font-mono:'Space Mono', monospace; --font-body:'Inter', sans-serif;
+    --bounce: cubic-bezier(.34,1.56,.64,1); --smooth: cubic-bezier(.22,1,.36,1);
+  }
+  *{ box-sizing:border-box; }
+  html, body{ height:100%; overflow:hidden; }
+  *{ scrollbar-width:none; -ms-overflow-style:none; } *::-webkit-scrollbar{ display:none; }
+  body{
+    margin:0; font-family:var(--font-body); color:var(--ink); background:var(--bg);
+    background-image:
+      repeating-linear-gradient(0deg, var(--grid-line) 0 1px, transparent 1px 64px),
+      repeating-linear-gradient(90deg, var(--grid-line) 0 1px, transparent 1px 64px);
+    -webkit-font-smoothing:antialiased;
+  }
+  #dither-bg{ position:fixed; inset:0; z-index:0; width:100%; height:100%; opacity:.55; }
+  .frame{
+    max-width:820px; margin:0 auto; height:100vh; background:var(--frame);
+    border-left:1.5px solid var(--line); border-right:1.5px solid var(--line);
+    display:flex; flex-direction:column; position:relative; z-index:1;
+  }
+
+  header{ display:flex; align-items:center; gap:14px; padding:16px 26px; border-bottom:1.5px solid var(--line); flex:0 0 auto; }
+  .logo-wrap{ width:28px; height:28px; position:relative; }
+  .logo-wrap img{ width:100%; height:100%; object-fit:contain; position:relative; z-index:1; }
+  .logo-shimmer{
+    position:absolute; inset:0; z-index:2; pointer-events:none;
+    background:linear-gradient(100deg, transparent 15%, #FF9A5A 34%, #FF5A2E 46%, #FFC27A 58%, transparent 80%);
+    background-size:260% 260%; mix-blend-mode:color-dodge; opacity:.85;
+    -webkit-mask-image:url('occasus-logo.webp'); -webkit-mask-size:contain; -webkit-mask-repeat:no-repeat; -webkit-mask-position:center;
+    mask-image:url('occasus-logo.webp'); mask-size:contain; mask-repeat:no-repeat; mask-position:center;
+    animation:shimmerSweep 4.5s ease-in-out infinite;
+  }
+  @keyframes shimmerSweep{ 0%{background-position:130% 20%;} 50%{background-position:10% 80%;} 100%{background-position:130% 20%;} }
+  header .titulos b{ font-family:var(--font-mono); font-weight:700; font-size:13.5px; display:block; }
+  header .titulos span{ font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; }
+  header a.volver{
+    margin-left:auto; font-family:var(--font-mono); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.03em;
+    color:var(--muted); text-decoration:none; border:1.5px solid var(--line); border-radius:16px; padding:7px 14px;
+    transition:color .2s, border-color .2s;
+  }
+  header a.volver:hover{ color:var(--ink); border-color:var(--ink); }
+
+  #chat-scroll{ flex:1; overflow-y:auto; padding:22px 26px; }
+  #chat-messages{ max-width:680px; margin:0 auto; }
+
+  .intro{ text-align:center; padding:30px 10px 20px; }
+  .intro h1{ font-family:var(--font-mono); font-size:22px; margin:0 0 8px; }
+  .intro p{ font-size:13px; color:var(--muted); max-width:420px; margin:0 auto; line-height:1.6; }
+
+  #sugerencias{ display:flex; flex-wrap:wrap; gap:8px; justify-content:center; padding:18px 0 8px; }
+  .ia-sug{ font-size:12px; font-weight:600; color:var(--muted); background:transparent; border:1.5px solid var(--line-soft); border-radius:16px; padding:8px 14px; cursor:pointer; transition:border-color .2s, color .2s; }
+  .ia-sug:hover{ border-color:var(--accent); color:var(--ink); }
+
+  .ia-msg{ display:flex; gap:14px; margin-bottom:22px; opacity:0; transform:translateY(10px); animation:msgIn .4s var(--smooth) forwards; }
+  @keyframes msgIn{ to{ opacity:1; transform:translateY(0); } }
+  .ia-msg .avatar{ width:30px; height:30px; border-radius:50%; flex:0 0 auto; display:flex; align-items:center; justify-content:center; font-size:14px; margin-top:2px; }
+  .ia-msg.tuya .avatar{ background:var(--ink); color:#fff; }
+  .ia-msg.estado .avatar{ background:var(--accent); color:#fff; }
+  .ia-msg .cuerpo{ flex:1; min-width:0; }
+  .ia-msg .quien{ font-family:var(--font-mono); font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin-bottom:6px; }
+  .ia-msg .burbuja{ font-size:14px; line-height:1.65; }
+  .ia-msg .burbuja b{ color:var(--accent); }
+
+  .ia-cargando{ display:flex; gap:5px; padding:8px 0; }
+  .ia-cargando span{ width:6px; height:6px; border-radius:50%; background:var(--muted-2); animation:iaPulso 1s ease-in-out infinite; }
+  .ia-cargando span:nth-child(2){ animation-delay:.15s; }
+  .ia-cargando span:nth-child(3){ animation-delay:.3s; }
+  @keyframes iaPulso{ 0%,100%{ opacity:.3; transform:scale(.8); } 50%{ opacity:1; transform:scale(1.15); } }
+
+  #input-zone{ flex:0 0 auto; border-top:1.5px solid var(--line); padding:16px 26px 20px; }
+  #input-row{ max-width:680px; margin:0 auto; display:flex; gap:10px; align-items:center; }
+
+  /* ---- Misma animación que la barra de búsqueda de la página de leyes ---- */
+  .search-wrap{ position:relative; flex:1; transition:transform .3s var(--bounce); }
+  .search-wrap.focused{ transform:scale(1.02); }
+  #ia-input{
+    width:100%; font-size:14px; padding:12px 18px; border-radius:22px; border:1.5px solid var(--line);
+    background:transparent; color:transparent; caret-color:var(--ink); outline:none; position:relative; z-index:1;
+    transition:border-color .2s;
+  }
+  #ia-input::placeholder{ color:var(--muted-2); }
+  .search-wrap.focused #ia-input{ border-color:var(--accent); box-shadow:0 0 0 4px var(--accent-soft); }
+  .search-overlay{
+    position:absolute; inset:0; z-index:2; pointer-events:none; display:flex; align-items:center;
+    padding:12px 18px; font-size:14px; color:var(--ink); white-space:pre; overflow:hidden;
+  }
+  .search-overlay span{ display:inline-block; }
+  .search-overlay span.pop{ animation:charPop .38s var(--bounce); }
+  @keyframes charPop{ 0%{transform:scale(.2) translateY(8px); opacity:0;} 55%{transform:scale(1.35);} 100%{transform:scale(1); opacity:1;} }
+
+  #ia-enviar{
+    font-family:var(--font-mono); font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:.03em;
+    background:var(--accent); color:#fff; border:none; border-radius:22px; padding:13px 20px; cursor:pointer; white-space:nowrap;
+    transition:transform .2s var(--bounce), opacity .2s; flex:0 0 auto;
+  }
+  #ia-enviar:active{ transform:scale(.93); }
+  #ia-enviar:disabled{ opacity:.5; cursor:default; }
+
+  @media(max-width:720px){
+    .frame{ border-left:none; border-right:none; }
+    header{ padding:14px 18px; }
+    #chat-scroll{ padding:18px 18px; }
+    #input-zone{ padding:14px 18px 18px; }
+    #ia-enviar{ padding:13px 16px; }
+    .intro h1{ font-size:19px; }
+  }
+</style>
+</head>
+<body>
+<canvas id="dither-bg"></canvas>
+<div class="frame">
+  <header>
+    <div class="logo-wrap"><img src="occasus-logo.webp" alt="Occasus"><div class="logo-shimmer"></div></div>
+    <div class="titulos"><b>Asesor Legal</b><span>Estado de Occasus</span></div>
+    <a class="volver" href="index.html">« Volver a Leyes</a>
+  </header>
+
+  <div id="chat-scroll">
+    <div id="chat-messages">
+      <div class="intro" id="intro">
+        <h1>⚖️ Asesor Legal del Estado</h1>
+        <p>Pregunta cualquier duda legal — responde basándose únicamente en el Código de Leyes vigente de Occasus, citando los artículos exactos.</p>
+        <div id="sugerencias">
+          <button class="ia-sug">¿Puedo usar X-Ray si nadie me ve?</button>
+          <button class="ia-sug">¿Qué pasa si no pago el impuesto?</button>
+          <button class="ia-sug">¿Es legal robar a otro ciudadano?</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="input-zone">
+    <div id="input-row">
+      <div class="search-wrap" id="ia-input-wrap">
+        <input type="text" id="ia-input" placeholder="Escribe tu consulta legal..." autocomplete="off">
+        <div class="search-overlay" id="ia-input-overlay" aria-hidden="true"></div>
+      </div>
+      <button id="ia-enviar">Preguntar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const PANELS = [{"n": "I", "titulo": "Orden Civil, Urbanismo y Burocracia Real", "leyes": [[1, "Ley de la Paz Urbana", "El vandalismo o alteración no autorizada de la infraestructura pública de la ciudad se castiga con trabajo forzado reparando los daños o cárcel."], [2, "Ley de la Propiedad Viva", "El robo a cualquier ciudadano vivo es un delito grave. Infringirlo conlleva una pena directa de cárcel o trabajo forzado para devolver lo robado."], [3, "Ley del Registro de Ciudadanía", "Todo jugador que desee residir o edificar en la ciudad debe firmar el censo municipal; no hacerlo se penaliza con cárcel preventiva."], [4, "Ley de Zonificación y Estética", "Las construcciones fuera de la normativa estética o flotantes serán demolidas, y su creador será condenado a trabajo forzado de limpieza."], [5, "Ley del Espacio Público", "Obstruir de forma deliberada los caminos o plazas estatales de la ciudad conlleva una pena inmediata de cárcel."], [6, "Ley de la Salubridad y Seguridad Pública", "Dejar propiedades a oscuras permitiendo el desove de monstruos dentro de la ciudad se sanciona con trabajo forzado de iluminación urbana."], [7, "Ley de la Infraestructura de Conectividad", "Bloquear o destruir las carreteras y puentes estatales que conectan la ciudad con el exterior se castiga con trabajo forzado."], [8, "Ley de la Fauna Urbana", "Dañar o confiscar animales de granja ajenos o públicos se penaliza con cárcel o la reposición mediante trabajo forzado."], [9, "Ley de Gestión de Residuos", "Arrojar basura u objetos inútiles al suelo de la ciudad de manera reiterada conlleva una condena menor de trabajo forzado."], [10, "Ley de la Libre Asociación", "Fundar gremios o empresas secretas sin registrar sus estatutos ante el tribunal se castiga con la cárcel de sus fundadores."]]}, {"n": "II", "titulo": "Sistema Monetario, Impuestos y Finanzas Estatales", "leyes": [[11, "Ley de la Moneda de Curso Legal", "Utilizar divisas no oficiales para transacciones dentro de la ciudad conlleva el decomiso de los bienes y cárcel."], [12, "Ley del Tributo Obligatorio (Impuestos)", "Cada ciudadano debe abonar su impuesto fiscal semanal en la moneda oficial ante el Banquero de la ciudad, quedando el pago depositado de forma automática e inmediata en el Tesoro municipal; evadirlo resulta en trabajo forzado para el Estado."], [13, "Ley del Presupuesto Municipal", "El uso indebido de los fondos del Tesoro destinados al mantenimiento de las defensas del Estado se castiga con pena de muerte."], [14, "Ley del Impuesto Predial", "Negarse a pagar el recargo fiscal por poseer parcelas de gran tamaño dentro de la ciudad se sanciona con la condena a trabajo forzado."], [15, "Ley del Registro de Transacciones Grandes", "Todo intercambio financiero masivo de recursos deberá constar por escrito en documento firmado y registrado ante el Ayuntamiento; realizar u ocultar estas operaciones sin registro se penaliza con cárcel."], [16, "Ley de la Evasión Fiscal", "La resistencia continuada al pago de tributos semanales se resolverá enviando al ciudadano a cumplir una pena de trabajo forzado."], [17, "Ley de la Insolvencia Financiera", "Si un ciudadano quiebra y no puede pagar sus deudas fiscales, el tribunal le impondrá trabajo forzado equivalente a su deuda."], [18, "Ley de las Licencias Comerciales", "Abrir un establecimiento en el mercado sin licencia firmada conlleva la clausura del local y cárcel para el dueño."], [19, "Ley del Fraude de Subsidios", "Mentir al tribunal para obtener exenciones fiscales temporales se castiga severamente con un castigo indeterminado fijado por el staff."], [20, "Ley del Desacato Financiero", "Intentar sobornar al recaudador de impuestos de la ciudad se penaliza con cárcel inmediata."]]}, {"n": "III", "titulo": "Código Penal, Combate de Fronteras y Consecuencias Letales", "leyes": [[21, "Ley del Libre Albedrío Exterior", "El combate y las disputas de sangre están permitidas fuera de las fronteras; los delitos ahí cometidos reciben un castigo indeterminado."], [22, "Ley de la Consecuencia Letal", "Matar a un ciudadano fuera de la ley dentro del mundo de Occasus es definitivo; el asesino será condenado a la pena de muerte."], [23, "Ley del Santuario Urbano (Zona Neutral)", "Iniciar un combate, desenvainar armas o derramar sangre dentro de los límites de la ciudad se castiga con la pena de muerte."], [24, "Ley de la Legítima Defensa", "Todo ciudadano que sea agredido dentro de su propiedad tiene derecho a defenderse; si el agresor sobrevive, irá a la cárcel."], [25, "Ley del Último Aliento (Combat Log)", "Desconectarse en medio de un combate o juicio penal provoca la ejecución automática del personaje mediante la pena de muerte."], [26, "Ley del Cadáver Huérfano", "Saquear el cuerpo de un jugador muerto antes de que el tribunal revise sus causas se penaliza con un castigo indeterminado."], [27, "Ley del Robo de Sucesión", "Apropiarse de los cofres de un fallecido que dejó un testamento legal firmado en la alcaldía se castiga con trabajo forzado."], [28, "Ley del Asesinato en Serie", "La caza sistemática y despiadada de ciudadanos indefensos fuera de la ciudad es terrorismo y se castiga con la pena de muerte."], [29, "Ley del Cebo y la Traición", "Forzar a un conciudadano vivo a activar trampas mortales o usarlo como cebo sin su consentimiento conlleva la pena de muerte."], [30, "Ley de la Reencarnación Ilegal", "Usar cuentas secundarias para infiltrarse en la ciudad tras haber muerto permanentemente se penaliza con un castigo indeterminado."]]}, {"n": "IV", "titulo": "Poder Judicial, Juicios y Ejecución de Penas", "leyes": [[31, "Ley del Tribunal Supremo de Occasus", "Todos los conflictos de la ciudad serán juzgados en la corte; el desacato a sus audiencias se castiga con cárcel."], [32, "Ley del Cumplimiento de las Normas", "Es una obligación civil conocer este código; violarlo deliberadamente o alegar ignorancia resulta en trabajo forzado."], [33, "Ley de la Presunción de Inocencia", "Todo acusado es inocente hasta que se presenten pruebas; los documentos sellados del Archivo Municipal y los resultados de las investigaciones estatales tienen valor probatorio pleno ante el Tribunal. Falsificar evidencias para incriminar a otro se castiga con cárcel."], [34, "Ley de la Magistratura (El Staff)", "Los administradores imponen las sentencias; rebelarse contra una decisión del staff conlleva un castigo indeterminado."], [35, "Ley de la Denuncia Formal", "Presentar demandas falsas o frívolas ante el tribunal para hacer perder el tiempo a la corte se penaliza con trabajo forzado."], [36, "Ley del Intento de Fuga", "Intentar escapar de la zona de cárcel o negarse a realizar el trabajo forzado asignado eleva la condena a pena de muerte."], [37, "Ley de la Complicidad Criminal", "Ayudar a un delincuente a esconderse o a evadir sus impuestos dentro del pueblo se castiga con la cárcel."], [38, "Ley de la Alta Traición", "Conspirar para destruir la ciudad o sabotear técnicamente el servidor se castiga de forma irrevocable con la pena de muerte."], [39, "Ley del Desacato al Tribunal", "Interrumpir un juicio en curso o insultar a los magistrados conllevará el ingreso inmediato a la cárcel."], [40, "Ley del Incumplimiento de Condena", "Si el infractor se niega a someterse a la corte, el staff aplicará sobre él un castigo indeterminado."]]}, {"n": "V", "titulo": "Regulaciones Generales, Tecnológicas y Orden Global", "leyes": [[41, "Ley de la Pureza Visual", "El uso de texturas X-Ray, hacks de iluminación ajenos al modpack oficial de la ciudad, o el uso de páginas y herramientas externas para obtener ventaja indebida sobre otros ciudadanos (como localizar estructuras, recursos o jugadores sin haberlos descubierto dentro del propio juego), se penaliza con un castigo indeterminado. El modpack oficial vigente es el recogido en el Anexo I de este código; cualquier paquete no listado allí se considera no autorizado."], [42, "Ley del Equilibrio Técnico", "Explotar mecánicas bugeadas o hechizos rotos de los mods para saltarse las prisiones o las leyes resulta en pena de muerte."], [43, "Ley de la Automatización Sostenible", "Si una industria pesada o granja mágica genera lag al servidor y el dueño se niega a apagarla, irá a la cárcel."], [44, "Ley de la Seguridad Patrimonial Oculta", "Esconder cofres con riquezas o tecnología prohibida del servidor dentro del área urbana sin registrar su contenido se castiga con trabajo forzado."], [45, "Ley del Monopolio de Estructuras", "Apropiarse ilegalmente de la totalidad de las mazmorras naturales generadas por los mods se penaliza con trabajo forzado."], [46, "Ley de la Alquimia Prohibida", "La duplicación de objetos mediante fallos del modpack es un crimen económico supremo; se aplica un castigo indeterminado."], [47, "Ley de la Transparencia Territorial", "Todo ciudadano está obligado por ley a declarar ante el Estado las coordenadas exactas de su vivienda principal, búnkeres y posesiones de valor; el ocultamiento de propiedades se castiga con cárcel."], [48, "Ley de la Red de Portales", "Queda estrictamente prohibido alterar, apagar o bloquear los portales de transporte público o estatales de la ciudad; cualquier daño a la red de portales se castiga con trabajo forzado."], [49, "Ley del Puerto y las Embarcaciones", "Toda embarcación debe adquirirse ante el dueño del puerto (actualmente el Estado, hasta que un ciudadano compre la concesión portuaria). Cada compra deberá quedar recogida por escrito conforme a la Ley del Documento Sellado (art. 51), con copia para el comprador y original archivado en el Ayuntamiento. Usar una embarcación sin haberla comprado se considera hurto de propiedad estatal y se castiga con trabajo forzado o cárcel."], [50, "Ley del Secreto de Estado", "Revelar por el chat global las coordenadas de búnkeres estratégicos o puestos de avanzada urbanos de otros ciudadanos vivos se sanciona con cárcel. Esta protección se extiende a cualquier medio de descubrimiento a distancia (incluidas tecnologías de renderizado extendido): localizar instalaciones ajenas no declaradas por este medio y explotar o divulgar esa información sin autorización se juzga como espionaje bajo esta misma ley."], [51, "Ley del Desacato ante el Comité", "Desobedecer las directrices del consejo municipal o del staff durante los disturbios urbanos de juego se castigará con un castigo indeterminado."]]}, {"n": "VI", "titulo": "Registro Notarial, Subsidios e Investigación Estatal", "leyes": [[52, "Ley del Documento Sellado (Registro Notarial)", "Todo acto de relevancia legal (juicios y sentencias, tratos y contratos, compraventas, testamentos, declaraciones e intercambios de gran volumen) deberá quedar recogido en un libro firmado por sus partes. De todo documento firmado se hará obligatoriamente copia: el original se archiva en el Ayuntamiento y la copia queda en poder del interesado. Ningún trato sin registro tendrá validez ante el Tribunal Supremo de Occasus."], [53, "Ley del Subsidio Ciudadano", "Todo ciudadano censado tiene derecho a percibir del Banquero de la ciudad un subsidio estatal de $100, una única vez cada 24 horas del mundo real. Intentar cobrarlo de nuevo antes de plazo, o obtenerlo mediante engaño o cuentas ajenas, se penaliza con cárcel."], [54, "Ley de la Trazabilidad Estatal", "El Estado de Occasus dispone de los medios necesarios para investigar y reconstruir las acciones y desplazamientos de cualquier ciudadano cuando exista causa legal: denuncia formal, juicio en curso o investigación abierta por el Tribunal. Ningún ciudadano podrá alegar desconocimiento de esta capacidad, y obstruir o intentar burlar una investigación estatal se castiga con cárcel."]]}, {"n": "VII", "titulo": "Cronología del Progreso y Restricciones Temporales de Apertura", "leyes": [[55, "Ley del Bloqueo Dimensional del Nether", "Queda estrictamente prohibido el acceso, la exploración o el establecimiento de portales hacia la dimensión del Nether antes de cumplirse el Día 6 del servidor. La frontera dimensional permanecerá sellada por decreto hasta esa fecha, y su apertura será proclamada oficialmente por el Estado. El traspaso prematuro de esta frontera (ya sea mediante fallos técnicos, accesos ocultos o portales clandestinos) será considerado desacato al calendario estatal y se sancionará con un castigo indeterminado, además de la destrucción inmediata del portal infractor."], [56, "Ley de la Veda de Minerales Superiores", "La extracción, posesión, ocultamiento o comercio de diamantes, netherite y demás materiales de gama alta queda completamente suspendida hasta alcanzar el Día 3 del servidor. Todo material superior obtenido antes del levantamiento de la veda será requisado de inmediato y pasará a engrosar el Tesoro municipal, y el infractor será condenado a trabajo forzado. El Estado se reserva el derecho de investigar el origen y la fecha de obtención de cualquier mineral superior que circule por la ciudad."]]}, {"n": "VIII", "titulo": "Nuevas Mecánicas: Fauna, Combate y Objetos Especiales", "leyes": [[57, "Ley del Botín Funerario", "Cuando un ciudadano fallece y deja tras de sí una lápida con sus pertenencias, dicha lápida se considera legalmente equivalente al cuerpo del difunto a todos los efectos: saquearla antes de que el Tribunal revise las causas de la muerte, o antes de que el propio fallecido decida sobre su Renacer, se penaliza igual que la Ley del Cadáver Huérfano (art. 26). Si el fallecido tenía testamento firmado, el contenido de la lápida sigue las reglas de la Ley del Robo de Sucesión (art. 27)."], [58, "Ley de la Negligencia en Combate", "El barrido propio de las mecánicas de combate no exime de responsabilidad: golpear a un ciudadano ajeno al conflicto, o herir a alguien dentro del Santuario Urbano por un barrido no dirigido, se juzga con la misma severidad que un ataque deliberado (arts. 23 y 24). La excusa de \"fue sin querer por el barrido\" no exime de la pena."], [59, "Ley de las Monturas y Mascotas Civiles", "Toda montura domesticada (aves, corceles u otras criaturas domadas) y toda mascota vinculada a un ciudadano se considera propiedad viva a todos los efectos (arts. 2 y 8). Robar, herir de forma deliberada o liberar sin consentimiento la montura o mascota de otro ciudadano se castiga como robo de propiedad bajo la Ley de la Propiedad Viva."], [60, "Ley de la Cosecha Ajena", "Recolectar cultivos, huertos o granjas de un ciudadano sin su permiso, por cualquier medio (incluida la recolección rápida o cualquier método que evite la interacción normal de cosecha), constituye robo bajo la Ley de la Propiedad Viva (art. 2)."], [61, "Ley de la Precedencia del Renacer", "El protocolo oficial de resurrección del Estado (Renacer) es la única vía reconocida para regresar de la muerte permanente. Cualquier mecánica alternativa de reaparición, desbloqueo o reanimación ajena a este protocolo carece de validez legal, y su uso deliberado para sortear el pago o las condiciones oficiales del Renacer se considera Alquimia Prohibida (art. 46)."]]}, {"n": "IX", "titulo": "Disposición General de Cierre", "leyes": [[62, "Ley de Cierre de Vacíos (Cláusula General)", "Ninguna mecánica, mod, objeto o exploit no contemplado expresamente en este código exime a un ciudadano de responsabilidad si su uso causa perjuicio real a otro ciudadano, al Estado o a la integridad del servidor. El Tribunal juzgará estos casos por analogía con la ley existente que más se asemeje en espíritu y consecuencia. La ignorancia de una mecánica nueva introducida por un mod no es excusa válida ante el Tribunal. Todo ciudadano que detecte un vacío legal deberá notificarlo al Estado; hacerlo será recompensado con una compensación monetaria a determinar por la administración."]]}];
+
+(function(){
+  "use strict";
+
+  /* ---------- Fondo Dither: ondas retro con dithering ordenado (igual que en la página de leyes) ---------- */
+  (function ditherBg(){
+    const canvas = document.getElementById("dither-bg");
+    const ctx = canvas.getContext("2d");
+    let W, H;
+    function resize(){ W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+    window.addEventListener("resize", resize); resize();
+    const bayer = [[0,8,2,10],[12,4,14,6],[3,11,1,9],[15,7,13,5]];
+    const celda = 5;
+    let t = 0;
+    function frame(){
+      ctx.clearRect(0,0,W,H);
+      const cols = Math.ceil(W/celda), rows = Math.ceil(H/celda);
+      for (let cy=0; cy<rows; cy++){
+        for (let cx=0; cx<cols; cx++){
+          const x = cx*celda, y = cy*celda;
+          const onda = Math.sin(x*0.02 + t) * Math.cos(y*0.025 - t*0.7);
+          const brillo = (onda + 1) / 2;
+          const umbral = bayer[cy % 4][cx % 4] / 16;
+          if (brillo > umbral){
+            const intensidad = Math.min(1, (brillo - umbral) * 2);
+            ctx.fillStyle = `rgba(20,20,20,${(intensidad*0.05).toFixed(3)})`;
+            ctx.fillRect(x, y, celda-1, celda-1);
+          }
+        }
+      }
+      t += 0.012;
+      requestAnimationFrame(frame);
+    }
+    frame();
+  })();
+
+  const GROQ_API_KEY = "PEGA_AQUI_TU_CLAVE_DE_GROQ";
+
+  function construirCodigoLegalCompleto(){
+    return PANELS.map(s =>
+      "SECCIÓN " + s.n + " — " + s.titulo + "\n" +
+      s.leyes.map(([num,titulo,texto]) => "Art. " + num + " (" + titulo + "): " + texto).join("\n")
+    ).join("\n\n");
+  }
+  const IA_SYSTEM_PROMPT =
+    "Eres el Asesor Legal Oficial del Estado de Occasus, un asistente al servicio del gobierno del servidor de Minecraft. " +
+    "Tu ÚNICA fuente de verdad es el Código de Leyes de Occasus que se te proporciona a continuación. Nunca inventes leyes que no existan ahí.\n\n" +
+    "Reglas de tus respuestas:\n" +
+    "- Responde SIEMPRE citando el número de artículo exacto (ej: \"según el art. 41\"), y si aplican varias leyes a la vez, cítalas todas.\n" +
+    "- Si la pregunta no tiene relación con ninguna ley del código, dilo con claridad, sin inventar.\n" +
+    "- Tono formal pero cercano, como un funcionario del Estado que quiere ayudar al ciudadano a entender su situación.\n" +
+    "- Responde en español, de forma clara y no demasiado larga (unas pocas frases, no un ensayo).\n" +
+    "- Puedes usar **negrita** para resaltar el número de artículo o la conclusión clave.\n\n" +
+    "CÓDIGO DE LEYES VIGENTE DE OCCASUS:\n" + construirCodigoLegalCompleto();
+
+  let iaHistorial = [];
+  let iaOcupado = false;
+
+  const chatMessages = document.getElementById("chat-messages");
+  const chatScroll = document.getElementById("chat-scroll");
+  const intro = document.getElementById("intro");
+  const iaInput = document.getElementById("ia-input");
+  const iaEnviar = document.getElementById("ia-enviar");
+
+  function escapeHtmlIA(s){ const d=document.createElement("div"); d.textContent=s; return d.innerHTML; }
+  function formatearRespuestaIA(texto){
+    return escapeHtmlIA(texto).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/\n/g, "<br>");
+  }
+  function anadirMensaje(rol, texto){
+    const div = document.createElement("div");
+    div.className = "ia-msg " + (rol === "user" ? "tuya" : "estado");
+    div.innerHTML = `
+      <div class="avatar">${rol === "user" ? "🧑" : "⚖️"}</div>
+      <div class="cuerpo">
+        <div class="quien">${rol === "user" ? "Tú" : "Estado de Occasus"}</div>
+        <div class="burbuja">${rol === "user" ? escapeHtmlIA(texto) : formatearRespuestaIA(texto)}</div>
+      </div>`;
+    chatMessages.appendChild(div);
+    chatScroll.scrollTop = chatScroll.scrollHeight;
+    return div;
+  }
+
+  async function preguntarAlAsesor(pregunta){
+    if (!pregunta.trim() || iaOcupado) return;
+    iaOcupado = true;
+    iaEnviar.disabled = true;
+    iaInput.value = "";
+    renderOverlay("");
+    intro.style.display = "none";
+    anadirMensaje("user", pregunta);
+    iaHistorial.push({ role: "user", content: pregunta });
+
+    const cargando = document.createElement("div");
+    cargando.className = "ia-msg estado";
+    cargando.innerHTML = `<div class="avatar">⚖️</div><div class="cuerpo"><div class="quien">Estado de Occasus</div><div class="ia-cargando"><span></span><span></span><span></span></div></div>`;
+    chatMessages.appendChild(cargando);
+    chatScroll.scrollTop = chatScroll.scrollHeight;
+
+    try {
+      const respuesta = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + GROQ_API_KEY },
+        body: JSON.stringify({
+          model: "llama-3.3-70b-versatile",
+          max_tokens: 600,
+          messages: [{ role: "system", content: IA_SYSTEM_PROMPT }, ...iaHistorial],
+        }),
+      });
+      const datos = await respuesta.json();
+      const texto = datos?.choices?.[0]?.message?.content || (datos?.error?.message ? "Error del Estado: " + datos.error.message : "No he podido generar una respuesta. Inténtalo de nuevo.");
+      cargando.remove();
+      anadirMensaje("estado", texto);
+      iaHistorial.push({ role: "assistant", content: texto });
+    } catch (e) {
+      cargando.remove();
+      anadirMensaje("estado", "No he podido conectar con el archivo del Estado ahora mismo. Inténtalo de nuevo en un momento.");
+    } finally {
+      iaOcupado = false;
+      iaEnviar.disabled = false;
+    }
+  }
+
+  /* ---- Misma animación de la barra de búsqueda: letras que aparecen con rebote ---- */
+  const searchWrap = document.getElementById("ia-input-wrap");
+  const overlay = document.getElementById("ia-input-overlay");
+  let prevLength = 0;
+  function renderOverlay(value){
+    overlay.innerHTML = "";
+    for (let i=0;i<value.length;i++){
+      const span = document.createElement("span");
+      span.textContent = value[i];
+      if (i >= prevLength) span.classList.add("pop");
+      overlay.appendChild(span);
+    }
+    prevLength = value.length;
+  }
+  iaInput.addEventListener("focus", ()=> searchWrap.classList.add("focused"));
+  iaInput.addEventListener("blur", ()=> searchWrap.classList.remove("focused"));
+  iaInput.addEventListener("input", ()=> renderOverlay(iaInput.value));
+
+  iaEnviar.addEventListener("click", ()=> preguntarAlAsesor(iaInput.value));
+  iaInput.addEventListener("keydown", (e)=>{ if (e.key === "Enter") preguntarAlAsesor(iaInput.value); });
+  document.querySelectorAll(".ia-sug").forEach(btn=>{
+    btn.addEventListener("click", ()=> preguntarAlAsesor(btn.textContent));
+  });
+
+  iaInput.focus();
+})();
+</script>
+</body>
+</html>
