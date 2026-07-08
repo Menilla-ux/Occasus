@@ -2,352 +2,644 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Occasus — Código de Leyes</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Occasus — Código Legal</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#08080A; --bg-grad: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(88,86,150,.25), transparent),
-                              radial-gradient(ellipse 60% 40% at 90% 100%, rgba(180,110,60,.14), transparent);
-    --card:rgba(255,255,255,.055); --card-solid:#--; --line:rgba(255,255,255,.10);
-    --ink:#F5F5F7; --muted:#98979F; --muted-2:#68676F;
-    --accent:#6E8BFF; --accent-2:#B76EFF;
-    --shadow: 0 8px 28px rgba(0,0,0,.45);
-    --shadow-lg: 0 20px 50px rgba(0,0,0,.55);
-    --bounce: cubic-bezier(.34, 1.56, .64, 1);
-    --smooth: cubic-bezier(.22, 1, .36, 1);
+    --bg:#ECECE9; --frame:#FFFFFF; --ink:#141414; --muted:#6B6B6B; --muted-2:#9A9A96;
+    --line:#141414; --line-soft:#DCDCD8; --grid-line:rgba(20,20,20,.07);
+    --accent:#FF5A2E; --accent-soft:#FFE7DE;
+    --font-mono:'Space Mono', monospace; --font-body:'Inter', sans-serif;
+    --bounce: cubic-bezier(.34,1.56,.64,1); --smooth: cubic-bezier(.22,1,.36,1);
   }
   *{ box-sizing:border-box; }
   html{ scroll-behavior:smooth; }
+  *{ scrollbar-width:none; -ms-overflow-style:none; }
+  *::-webkit-scrollbar{ display:none; width:0; height:0; }
   body{
-    margin:0; font-family:'Inter',-apple-system,sans-serif; color:var(--ink); background:var(--bg);
-    background-image:var(--bg-grad); background-attachment:fixed;
-    -webkit-font-smoothing:antialiased; overflow-x:hidden;
+    margin:0; font-family:var(--font-body); color:var(--ink); background:var(--bg);
+    background-image:
+      repeating-linear-gradient(0deg, var(--grid-line) 0 1px, transparent 1px 64px),
+      repeating-linear-gradient(90deg, var(--grid-line) 0 1px, transparent 1px 64px);
+    -webkit-font-smoothing:antialiased;
   }
+  .frame{
+    max-width:1120px; margin:22px auto; background:var(--frame); border:1.5px solid var(--line);
+    position:relative; z-index:1; min-height:calc(100vh - 44px);
+  }
+  #dither-bg{ position:fixed; inset:0; z-index:0; width:100%; height:100%; opacity:.55; }
+  .ticker-wrap{ background:#141414; border-bottom:1.5px solid var(--line); overflow:hidden; white-space:nowrap; }
+  .ticker-track{ display:inline-flex; animation:tickerMove 32s linear infinite; }
+  .ticker-track span{
+    font-family:var(--font-mono); font-size:11px; font-weight:700; color:#EDEDEA; text-transform:uppercase; letter-spacing:.05em;
+    padding:9px 26px; white-space:nowrap;
+  }
+  .ticker-track span.dot{ color:var(--accent); padding:9px 0; }
+  @keyframes tickerMove{ from{ transform:translateX(0); } to{ transform:translateX(-50%); } }
 
-  .top{ max-width:560px; margin:0 auto; padding:56px 32px 28px; text-align:center; }
-  .top .logo-wrap{ width:88px; height:88px; margin:0 auto 16px; position:relative; }
-  .logo-glow{
-    position:absolute; inset:-30%; z-index:0; border-radius:50%; filter:blur(22px);
-    background:radial-gradient(circle, rgba(110,139,255,.55), rgba(199,110,255,.35) 45%, transparent 72%);
-    animation:glowBreathe 3.6s ease-in-out infinite;
-  }
-  @keyframes glowBreathe{ 0%,100%{ opacity:.55; transform:scale(.92); } 50%{ opacity:1; transform:scale(1.08); } }
-  .top .logo-wrap img{ width:100%; height:100%; object-fit:contain; position:relative; z-index:1;
-    filter:drop-shadow(0 8px 24px rgba(110,139,255,.3)) grayscale(.45) contrast(1.18) brightness(1.06); }
+  /* ---------- Header ---------- */
+  header{ display:flex; align-items:center; gap:24px; padding:18px 32px; border-bottom:1.5px solid var(--line); flex-wrap:wrap; position:relative; }
+  .brand{ display:flex; align-items:center; gap:10px; }
+  .logo-wrap{ width:30px; height:30px; position:relative; }
+  .logo-wrap img{ width:100%; height:100%; object-fit:contain; position:relative; z-index:1; }
   .logo-shimmer{
     position:absolute; inset:0; z-index:2; pointer-events:none;
-    background:linear-gradient(100deg,
-      transparent 8%, rgba(255,255,255,.95) 18%, #6E8BFF 26%, transparent 34%,
-      transparent 46%, #FF9A5A 54%, rgba(255,255,255,.9) 62%, #C86EFF 70%, transparent 80%);
-    background-size:280% 280%; mix-blend-mode:color-dodge; opacity:1;
+    background:linear-gradient(100deg, transparent 15%, #FF9A5A 34%, #FF5A2E 46%, #FFC27A 58%, transparent 80%);
+    background-size:260% 260%; mix-blend-mode:color-dodge; opacity:.85;
     -webkit-mask-image:url('occasus-logo.webp'); -webkit-mask-size:contain; -webkit-mask-repeat:no-repeat; -webkit-mask-position:center;
     mask-image:url('occasus-logo.webp'); mask-size:contain; mask-repeat:no-repeat; mask-position:center;
-    animation:shimmerSweep 3.8s ease-in-out infinite;
+    animation:shimmerSweep 4.5s ease-in-out infinite;
   }
-  @keyframes shimmerSweep{ 0%{background-position:140% 10%;} 50%{background-position:0% 90%;} 100%{background-position:140% 10%;} }
-  .top h1{ font-size:26px; font-weight:800; letter-spacing:-.01em; margin:0 0 22px; color:var(--ink); }
+  @keyframes shimmerSweep{ 0%{background-position:130% 20%;} 50%{background-position:10% 80%;} 100%{background-position:130% 20%;} }
+  .brand b{ font-family:var(--font-mono); font-weight:700; font-size:14px; letter-spacing:.02em; }
+  .brand span{ display:block; font-size:9px; color:var(--muted); letter-spacing:.1em; text-transform:uppercase; }
+  nav{ display:flex; align-items:center; gap:22px; font-size:12.5px; font-weight:600; color:var(--muted); }
+  nav a{ color:var(--muted); text-decoration:none; cursor:pointer; position:relative; padding-bottom:2px; }
+  nav a:hover{ color:var(--ink); }
+  nav a.active{ color:var(--ink); }
+  nav a.active::after{ content:""; position:absolute; left:0; right:0; bottom:-2px; height:2px; background:var(--ink); }
+  #mega-trigger{ display:flex; align-items:center; gap:4px; }
+  #mega-dropdown{
+    position:absolute; top:100%; left:0; right:0;
+    background:var(--frame); border-bottom:1.5px solid var(--line); box-shadow:0 18px 40px rgba(0,0,0,.10);
+    overflow:hidden; max-height:0; transition:max-height .42s var(--smooth); z-index:80;
+  }
+  #mega-dropdown.open{ max-height:280px; }
+  #mega-dropdown-inner{ display:grid; grid-template-columns:repeat(3,1fr); gap:0; padding:26px 32px; max-height:280px; overflow-y:auto; }
+  .mega-col{ padding-right:24px; }
+  .mega-col-label{ font-size:10px; font-weight:700; color:var(--muted-2); text-transform:uppercase; letter-spacing:.1em; margin-bottom:12px; }
+  .mega-item{ display:block; padding:7px 0; cursor:pointer; font-size:13px; font-weight:600; color:var(--ink); }
+  .mega-item:hover{ color:var(--accent); }
+  .mega-item .n{ font-size:10px; color:var(--muted); font-family:var(--font-mono); margin-left:6px; }
+  .mega-slide-r{ animation:megaEnterR .34s var(--smooth); }
+  @keyframes megaEnterR{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
+  .header-spacer{ flex:1; }
+  .btn-pill{
+    font-family:var(--font-mono); font-size:11.5px; font-weight:700; letter-spacing:.03em; text-transform:uppercase;
+    padding:10px 20px; border-radius:20px; border:none; cursor:pointer; background:var(--accent); color:#fff;
+    transition:transform .2s var(--bounce); display:inline-block; text-decoration:none;
+  }
+  .btn-pill:active{ transform:scale(.93); }
+  .btn-outline{
+    font-family:var(--font-mono); font-size:11.5px; font-weight:700; letter-spacing:.03em; text-transform:uppercase;
+    padding:10px 20px; border-radius:20px; border:1.5px solid var(--line); cursor:pointer; background:transparent; color:var(--ink);
+    transition:transform .2s var(--bounce);
+  }
+  .btn-outline:active{ transform:scale(.93); }
 
-  .search-wrap{ position:relative; width:100%; max-width:400px; margin:0 auto; transition:transform .3s var(--bounce); }
-  .search-wrap.focused{ transform:scale(1.045); }
+  /* ---------- Hero ---------- */
+  .hero{ padding:40px 32px 24px; border-bottom:1.5px solid var(--line); }
+  .hero h1{
+    font-family:var(--font-mono); font-weight:700; font-size:clamp(46px,9vw,108px); line-height:.92; margin:0;
+    letter-spacing:-.01em; text-transform:uppercase;
+  }
+  .hero h1 .accent{ color:var(--accent); }
+  .hero .sub{ font-size:13px; color:var(--muted); margin-top:14px; max-width:420px; }
+
+  /* ---------- Fila de estadísticas ---------- */
+  .stats-row{ display:grid; grid-template-columns:repeat(3,1fr); border-bottom:1.5px solid var(--line); }
+  .stats-row > div{ padding:20px 28px; border-right:1.5px solid var(--line); }
+  .stats-row > div:last-child{ border-right:none; }
+  .stats-row .label{ font-size:10.5px; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; font-weight:700; margin-bottom:6px; }
+  .stats-row .value{ font-family:var(--font-mono); font-size:34px; font-weight:700; }
+  .mobile-links{ display:none; }
+  .mobile-links a{
+    font-family:var(--font-mono); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.03em;
+    padding:8px 14px; border-radius:16px; border:1.5px solid var(--line); color:var(--ink); text-decoration:none; cursor:pointer;
+  }
+
+  /* ---------- Ley destacada ---------- */
+  .destacada-wrap{ padding:24px 32px; border-bottom:1.5px solid var(--line); }
+  .destacada-eyebrow{ font-size:10.5px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.1em; margin-bottom:10px; }
+  .destacada{ border:1.5px solid var(--line); display:flex; flex-wrap:wrap; }
+  .destacada-main{ flex:1; min-width:260px; padding:22px 24px; border-right:1.5px solid var(--line-soft); }
+  .destacada-tags{ display:flex; gap:6px; margin-bottom:12px; }
+  .tag-chip{ font-family:var(--font-mono); font-size:9.5px; font-weight:700; padding:4px 9px; border-radius:3px; text-transform:uppercase; }
+  .tag-chip.new{ background:var(--accent); color:#fff; }
+  .tag-chip.cat{ background:var(--line-soft); color:var(--ink); }
+  .destacada-main h3{ font-family:var(--font-mono); font-size:17px; margin:0 0 8px; }
+  .destacada-main p{ font-size:12.5px; color:var(--muted); line-height:1.6; margin:0; }
+  .destacada-stats{ display:flex; flex:0 0 auto; }
+  .destacada-stats > div{ padding:20px 22px; border-right:1px solid var(--line-soft); min-width:100px; }
+  .destacada-stats > div:last-child{ border-right:none; }
+  .destacada-stats .n{ font-family:var(--font-mono); font-weight:700; font-size:17px; }
+  .destacada-stats .l{ font-size:9.5px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; margin-top:2px; }
+
+  /* ---------- Filtro + búsqueda ---------- */
+  .filtro-row{ display:flex; align-items:center; gap:10px; padding:18px 32px; border-bottom:1.5px solid var(--line); flex-wrap:wrap; }
+  .filtro-tab{
+    font-family:var(--font-mono); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.03em;
+    padding:8px 16px; border-radius:16px; border:1.5px solid var(--line); background:transparent; color:var(--ink); cursor:pointer;
+  }
+  .filtro-tab.active{ background:var(--ink); color:#fff; border-color:var(--ink); }
+  .search-wrap{ position:relative; margin-left:auto; width:220px; transition:transform .3s var(--bounce); }
+  .search-wrap.focused{ transform:scale(1.03); }
   #search{
-    width:100%; font-size:14px; padding:13px 22px; border-radius:26px; border:1px solid var(--line);
-    background:var(--card); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
-    color:transparent; caret-color:var(--ink); outline:none; box-shadow:var(--shadow);
-    position:relative; z-index:1; transition:border-color .25s, box-shadow .3s var(--bounce);
+    width:100%; font-size:12.5px; padding:9px 14px; border-radius:16px; border:1.5px solid var(--line);
+    background:transparent; color:transparent; caret-color:var(--ink); outline:none; position:relative; z-index:1;
   }
   #search::placeholder{ color:var(--muted-2); }
-  .search-wrap.focused #search{ border-color:rgba(110,139,255,.5); box-shadow:var(--shadow), 0 0 0 4px rgba(110,139,255,.16); }
   .search-overlay{
     position:absolute; inset:0; z-index:2; pointer-events:none; display:flex; align-items:center;
-    padding:13px 22px; font-size:14px; color:var(--ink); white-space:pre; overflow:hidden;
+    padding:9px 14px; font-size:12.5px; color:var(--ink); white-space:pre; overflow:hidden;
   }
   .search-overlay span{ display:inline-block; }
   .search-overlay span.pop{ animation:charPop .38s var(--bounce); }
-  @keyframes charPop{ 0%{transform:scale(.2) translateY(8px); opacity:0;} 55%{transform:scale(1.35) translateY(-2px); opacity:1;} 100%{transform:scale(1) translateY(0); opacity:1;} }
+  @keyframes charPop{ 0%{transform:scale(.2) translateY(8px); opacity:0;} 55%{transform:scale(1.35);} 100%{transform:scale(1); opacity:1;} }
 
-  /* ================= REJILLA DE CATEGORÍAS ================= */
-  .grid-wrap{ max-width:560px; margin:0 auto; padding:14px 32px 60px; }
-  .categories-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:11px; }
-  @media(max-width:560px){ .categories-grid{ grid-template-columns:repeat(2, 1fr); } }
+  /* ---------- Rejilla de categorías ---------- */
+  .cat-grid{ display:grid; grid-template-columns:repeat(3,1fr); }
+  .cat-card{
+    border-right:1.5px solid var(--line); border-bottom:1.5px solid var(--line); padding:22px 22px 0; min-height:190px;
+    display:flex; flex-direction:column; cursor:pointer; position:relative; overflow:hidden;
+    transition:background .2s;
+  }
+  .cat-card:nth-child(3n){ border-right:none; }
+  .cat-card:hover{ background:#FAFAF8; }
+  .cat-tag{
+    font-family:var(--font-mono); font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:.05em;
+    border:1px solid var(--line-soft); border-radius:3px; padding:3px 8px; width:fit-content; color:var(--muted); margin-bottom:16px;
+  }
+  .cat-name{ font-family:var(--font-mono); font-weight:700; font-size:15px; line-height:1.3; flex:1; }
+  .cat-stats{ display:flex; align-items:center; border-top:1px solid var(--line-soft); margin-top:14px; }
+  .cat-stat{ padding:12px 0; flex:1; }
+  .cat-stat:first-child{ border-right:1px solid var(--line-soft); padding-right:10px; }
+  .cat-stat b{ font-family:var(--font-mono); font-size:14px; display:block; }
+  .cat-stat span{ font-size:9px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; }
+  .cat-arrow{
+    width:34px; height:34px; border-radius:50%; border:1.5px solid var(--line); background:transparent; cursor:pointer;
+    font-size:14px; flex:0 0 auto; transition:transform .25s var(--bounce), background .2s;
+  }
+  .cat-card:hover .cat-arrow{ background:var(--ink); color:#fff; transform:rotate(45deg); }
 
-  .cat-tile{
-    position:relative; min-height:150px; border-radius:22px; overflow:hidden; cursor:pointer;
-    background:var(--card); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
-    border:1px solid var(--line); box-shadow:var(--shadow);
-    transition:transform .35s var(--bounce), box-shadow .35s var(--smooth), background .3s;
-  }
-  .cat-tile:hover{ transform:translateY(-5px) scale(1.035); box-shadow:var(--shadow-lg); background:rgba(255,255,255,.09); }
-  .cat-tile:active{ transform:scale(.95); }
-  .tile-spot{
-    position:absolute; inset:0; pointer-events:none; opacity:0; transition:opacity .3s;
-    background:radial-gradient(160px circle at var(--mx,50%) var(--my,50%), rgba(110,139,255,.28), transparent 65%);
-  }
-  .cat-tile:hover .tile-spot{ opacity:1; }
-  .tile-content{ position:relative; z-index:2; height:100%; display:flex; flex-direction:column; justify-content:space-between; padding:14px; gap:8px; }
-  .tile-badge{
-    width:26px; height:26px; border-radius:8px; background:linear-gradient(135deg, var(--accent), var(--accent-2));
-    color:#fff; font-size:11.5px; font-weight:800;
-    display:flex; align-items:center; justify-content:center; flex:0 0 auto;
-  }
-  .tile-name{ font-size:12.5px; font-weight:700; color:var(--ink); line-height:1.35; word-wrap:break-word; }
-  .tile-count{ font-size:10.5px; font-weight:600; color:var(--muted); flex:0 0 auto; }
+  /* ---------- Panel expandido (mega-menu al hacer clic en una tarjeta) ---------- */
+  #detalle-wrap{ display:none; border-bottom:1.5px solid var(--line); transform-origin:top center; }
+  #detalle-wrap.open{ display:block; animation:detalleAbrir .5s var(--bounce); }
+  #detalle-wrap.cerrando{ display:block; animation:detalleCerrar .28s var(--smooth) forwards; }
+  @keyframes detalleAbrir{ 0%{ opacity:0; transform:scaleY(.82) translateY(-10px);} 100%{ opacity:1; transform:scaleY(1) translateY(0);} }
+  @keyframes detalleCerrar{ 0%{ opacity:1; transform:scale(1);} 100%{ opacity:0; transform:scale(.94) translateY(-8px);} }
+  #info-wrap{ display:none; border-bottom:1.5px solid var(--line); }
+  #info-wrap.open{ display:block; }
+  #info-inner{ padding:8px 32px 26px; }
+  .info-desc{ font-size:12.5px; color:var(--muted); line-height:1.6; margin:4px 0 16px; max-width:520px; }
+  .info-nota{ font-size:11.5px; color:var(--muted); background:#FAFAF8; border:1px solid var(--line-soft); border-radius:6px; padding:12px 14px; margin-top:16px; }
+  .pre-scramble{ opacity:0; }
+  .mods-grid{ display:flex; flex-wrap:wrap; gap:8px; }
+  .mod-chip{ font-family:var(--font-mono); font-size:10.5px; font-weight:700; border:1.5px solid var(--line); border-radius:14px; padding:7px 13px; }
+  .estado-grid{ display:grid; grid-template-columns:1fr 1fr; gap:0; border:1.5px solid var(--line); }
+  .estado-item{ display:flex; flex-direction:column; gap:4px; padding:16px 18px; border-right:1px solid var(--line-soft); border-bottom:1px solid var(--line-soft); }
+  .estado-item:nth-child(2n){ border-right:none; }
+  .estado-item .l{ font-size:10px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); font-weight:700; }
+  .estado-item .v{ font-family:var(--font-mono); font-size:13px; font-weight:700; }
+  @media(max-width:760px){ .estado-grid{ grid-template-columns:1fr; } .estado-item{ border-right:none; } }
 
-  /* ================= PANEL EXPANDIDO ================= */
-  #overlay-bg{
-    position:fixed; inset:0; background:rgba(0,0,0,0); z-index:99; pointer-events:none;
-    transition:background .55s var(--smooth);
-  }
-  #overlay-bg.show{ background:rgba(0,0,0,.5); pointer-events:auto; }
-  #cat-expanded{
-    position:fixed; z-index:100; background:var(--bg); background-image:var(--bg-grad); overflow:hidden; display:none;
-  }
-  .exp-top{ position:relative; padding:24px 32px 8px; opacity:0; transition:opacity .28s ease; }
-  .exp-top.dissolve-ready{ transition:opacity .1s linear, filter .1s linear, transform .1s linear; }
-  .exp-close{
-    position:absolute; top:22px; right:24px; z-index:5; width:34px; height:34px; border-radius:50%;
-    background:var(--card); backdrop-filter:blur(14px); border:1px solid var(--line); color:var(--ink); font-size:15px; box-shadow:var(--shadow);
-    display:flex; align-items:center; justify-content:center; cursor:pointer; transition:transform .25s var(--bounce);
-  }
-  .exp-close:active{ transform:scale(.8) rotate(-8deg); }
-  .exp-badge{
-    width:32px; height:32px; border-radius:10px; background:linear-gradient(135deg, var(--accent), var(--accent-2)); color:#fff; font-size:13px; font-weight:800;
-    display:flex; align-items:center; justify-content:center; margin-bottom:8px;
-  }
-  .exp-title{ font-size:20px; font-weight:800; letter-spacing:-.01em; max-width:75%; color:var(--ink); }
-  .exp-body{ padding:10px 32px 60px; overflow-y:auto; height:calc(100% - 100px); max-width:560px; margin:0 auto; opacity:0; transition:opacity .28s ease; scrollbar-width:none; -ms-overflow-style:none; }
-  .exp-body::-webkit-scrollbar{ display:none; }
-  #cat-expanded.content-visible .exp-top,
-  #cat-expanded.content-visible .exp-body{ opacity:1; }
+  /* ================= La Bolsa (nueva sección) ================= */
+  #bolsa-wrap{ display:none; border-bottom:1.5px solid var(--line); transform-origin:top center; }
+  #bolsa-wrap.open{ display:block; animation:detalleAbrir .5s var(--bounce); }
+  #bolsa-wrap.cerrando{ display:block; animation:detalleCerrar .28s var(--smooth) forwards; }
+  .bolsa-sub{ font-size:12.5px; color:var(--muted); line-height:1.6; margin:4px 32px 0; max-width:520px; }
+  .bolsa-stats-row{ display:grid; grid-template-columns:repeat(3,1fr); border-top:1.5px solid var(--line); border-bottom:1.5px solid var(--line); margin-top:18px; }
+  .bolsa-stats-row > div{ padding:18px 26px; border-right:1.5px solid var(--line); }
+  .bolsa-stats-row > div:last-child{ border-right:none; }
+  .bolsa-stats-row .label{ font-size:10.5px; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; font-weight:700; margin-bottom:8px; }
+  .bolsa-stats-row .value{ font-family:var(--font-mono); font-size:26px; font-weight:700; }
+  .slider-track{ width:100%; max-width:180px; height:4px; background:var(--line-soft); border-radius:2px; position:relative; margin-top:10px; }
+  .slider-fill{ position:absolute; left:0; top:0; height:100%; background:var(--accent); border-radius:2px; }
+  .slider-dot{ position:absolute; top:50%; width:9px; height:9px; background:var(--accent); border-radius:50%; transform:translate(-50%,-50%); box-shadow:0 0 0 4px var(--accent-soft); }
+  .slider-range{ display:flex; justify-content:space-between; font-size:9.5px; color:var(--muted-2); margin-top:6px; font-family:var(--font-mono); max-width:180px; }
 
-  .law-card{
-    display:flex; gap:12px; background:transparent; border:none; border-bottom:1px solid var(--line);
-    padding:12px 2px; margin-bottom:0; box-shadow:none;
-    opacity:0; transform:translateY(8px);
-  }
-  .law-card:last-child{ border-bottom:none; }
-  .law-card.in{ animation:lawIn .4s var(--smooth) forwards; }
-  @keyframes lawIn{ to{ opacity:1; transform:translateY(0); } }
-  .law-num{
-    width:22px;height:22px;border-radius:7px;background:var(--card);color:var(--muted);font-weight:700;font-size:11px;
-    display:flex;align-items:center;justify-content:center; flex:0 0 auto; margin-top:1px; border:1px solid var(--line);
-  }
-  .law-body{ flex:1; min-width:0; }
-  .law-title{ font-size:13px; font-weight:700; margin-bottom:2px; color:var(--ink); }
-  .law-text{ font-size:12.5px; line-height:1.5; color:var(--muted); }
+  .bolsa-layout{ display:grid; grid-template-columns:230px 1fr; border-bottom:1.5px solid var(--line); }
+  .side-cards{ border-right:1.5px solid var(--line); display:flex; flex-direction:column; max-height:420px; overflow-y:auto; }
+  .side-card{ padding:15px 20px; border-bottom:1.5px solid var(--line-soft); cursor:pointer; transition:background .2s; }
+  .side-card:last-child{ border-bottom:none; }
+  .side-card:hover{ background:#FAFAF8; }
+  .side-card.active{ background:var(--accent-soft); }
+  .side-card .top{ display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+  .side-card .tag{ font-family:var(--font-mono); font-size:9.5px; font-weight:700; border:1px solid var(--line-soft); border-radius:3px; padding:2px 7px; color:var(--muted); }
+  .side-card .name{ font-size:12px; font-weight:700; margin-bottom:8px; line-height:1.3; }
+  .side-card .price-row{ display:flex; align-items:center; justify-content:space-between; }
+  .side-card .price{ font-family:var(--font-mono); font-size:18px; font-weight:700; }
+  .side-card .chg{ font-family:var(--font-mono); font-size:10.5px; font-weight:700; padding:3px 8px; border-radius:10px; }
+  .side-card .chg.up{ background:#E9F8EF; color:#1E8E5A; }
+  .side-card .chg.down{ background:#FBE9E7; color:#D14343; }
 
-  #search-results{ display:none; }
+  .main-panel{ padding:20px 24px 6px; position:relative; }
+  .main-top{ display:flex; align-items:center; gap:8px; margin-bottom:14px; flex-wrap:wrap; }
+  #bolsa-titulo-activa{ font-family:var(--font-mono); font-size:14px; font-weight:700; }
+  #bolsa-titulo-activa .id{ color:var(--accent); margin-right:8px; }
+  .main-top .spacer{ flex:1; }
+  .icon-btn{ width:30px; height:30px; border-radius:50%; border:1.5px solid var(--line); background:transparent; color:var(--ink); cursor:pointer; font-size:13px; }
+
+  #bolsa-chart-wrap{ position:relative; height:260px; }
+  #bolsa-chart-canvas{ width:100%; height:100%; display:block; }
+  .chart-labels{ display:flex; justify-content:space-between; font-size:10.5px; color:var(--muted); padding:8px 4px 16px; font-family:var(--font-mono); }
+
+  .chart-dot{
+    position:absolute; width:9px; height:9px; border-radius:50%; background:var(--accent); border:2px solid #fff;
+    box-shadow:0 0 0 3px var(--accent-soft), 0 2px 6px rgba(0,0,0,.2);
+    opacity:0; transition:opacity .2s; pointer-events:none; transform:translate(-50%,-50%);
+  }
+  .chart-dot.show{ opacity:1; }
+  .tooltip-card{
+    position:absolute; width:140px; color:var(--ink);
+    opacity:0; pointer-events:none; transition:opacity .2s, transform .25s var(--smooth); transform:translateY(4px);
+  }
+  .tooltip-card.show{ opacity:1; transform:translateY(0); }
+  .tooltip-card .tdate{ font-family:var(--font-mono); font-size:10px; font-weight:700; color:var(--accent); margin-bottom:8px; text-transform:uppercase; letter-spacing:.05em; }
+  .tooltip-card .tprice{ font-family:var(--font-mono); font-size:19px; font-weight:700; margin-bottom:2px; text-shadow:0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff; }
+  .tooltip-card .tlabel{ font-size:9.5px; color:var(--muted); margin-bottom:9px; }
+
+  .bolsa-bottom-cards{ display:grid; grid-template-columns:1fr 1fr; border-bottom:1.5px solid var(--line); }
+  .bottom-card{ display:flex; align-items:center; justify-content:space-between; gap:14px; padding:18px 26px; border-right:1.5px solid var(--line); }
+  .bottom-card:last-child{ border-right:none; }
+  .bottom-card .t{ font-family:var(--font-mono); font-size:12.5px; font-weight:700; }
+  .bottom-card .s{ font-size:11px; color:var(--muted); margin-top:4px; }
+  .bottom-card button{
+    font-family:var(--font-mono); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.03em;
+    background:var(--accent); color:#fff; border:none; border-radius:16px; padding:9px 16px; cursor:pointer; white-space:nowrap;
+    transition:transform .2s var(--bounce);
+  }
+  .bottom-card button:active{ transform:scale(.93); }
+  .bottom-card.discord button{ background:var(--ink); }
+  .sync-note{ padding:16px 26px 26px; font-size:11.5px; color:var(--muted); line-height:1.65; }
+  .sync-note b{ color:var(--ink); }
+
+  @media(max-width:760px){
+    .bolsa-sub{ margin:4px 18px 0; }
+    .bolsa-stats-row{ grid-template-columns:1fr 1fr; }
+    .bolsa-stats-row > div:nth-child(2){ border-right:none; }
+    .bolsa-stats-row > div:nth-child(3){ border-right:none; border-top:1.5px solid var(--line); grid-column:span 2; }
+    .bolsa-layout{ grid-template-columns:1fr; }
+    .side-cards{ flex-direction:row; overflow-x:auto; overflow-y:visible; border-right:none; border-bottom:1.5px solid var(--line); max-height:none; }
+    .side-card{ min-width:160px; border-bottom:none; border-right:1.5px solid var(--line-soft); }
+    .main-panel{ padding:16px 18px 4px; }
+    .bolsa-bottom-cards{ grid-template-columns:1fr; }
+    .bottom-card{ border-right:none; border-bottom:1.5px solid var(--line); padding:16px 18px; }
+    .sync-note{ padding:14px 18px 20px; }
+  }
+  
+  .detalle-head{ display:flex; align-items:center; justify-content:space-between; padding:18px 32px; border-bottom:1px solid var(--line-soft); }
+  .detalle-head h3{ font-family:var(--font-mono); font-size:15px; margin:0; }
+  .detalle-close{ width:28px; height:28px; border-radius:50%; border:1.5px solid var(--line); background:transparent; cursor:pointer; font-size:13px; }
+  #detalle-inner{ max-height:56vh; overflow-y:auto; padding:8px 32px 20px; }
+
+  .law-row{ display:flex; gap:14px; padding:13px 0; border-bottom:1px solid var(--line-soft); opacity:0; transform:translateY(8px); }
+  .law-row.in{ animation:lawIn .4s var(--smooth) forwards; }
+  @keyframes lawIn{ to{ opacity:1; transform:translateY(0);} }
+  .law-row:last-child{ border-bottom:none; }
+  .law-num{ font-family:var(--font-mono); width:26px; height:26px; border:1.5px solid var(--line); border-radius:5px; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; flex:0 0 auto; }
+  .law-title{ font-family:var(--font-mono); font-size:12.5px; font-weight:700; margin-bottom:3px; }
+  .law-text{ font-size:12px; line-height:1.55; color:var(--muted); }
+
+  #search-results{ display:none; padding:8px 32px 20px; }
   #search-results.show{ display:block; }
-  #no-results{ display:none; text-align:center; padding:50px 20px; color:var(--muted); font-size:14px; }
+  #no-results{ display:none; text-align:center; padding:50px 20px; color:var(--muted); font-size:13px; }
 
-  .reveal{ opacity:0; transform:translateY(14px) scale(.96); transition:opacity .55s var(--bounce), transform .55s var(--bounce); }
+  /* ---------- CTA final ---------- */
+  .cta{ display:flex; align-items:center; justify-content:space-between; padding:28px 32px; flex-wrap:wrap; gap:16px; }
+  .cta-text{ font-family:var(--font-mono); font-size:15px; font-weight:700; text-transform:uppercase; }
+  .cta-text span{ display:block; font-size:11px; color:var(--muted); font-weight:400; text-transform:none; margin-top:4px; font-family:var(--font-body); }
+  .cta-btns{ display:flex; gap:10px; }
 
-  /* ================= Dual Scramble: revuelve en color de acento, se asienta en color normal ================= */
-  .scr-ch{ transition:color .15s linear; }
-  .scr-ch.scrambling{ color:var(--accent); }
-  .reveal.in{ opacity:1; transform:translateY(0); }
+  /* ---------- Click Spark ---------- */
+  .spark-line{ position:fixed; z-index:9999; pointer-events:none; background:var(--accent); border-radius:1px; }
 
-  /* ================= Fondo animado (aprox. "Grid Motion"), sutil y transparente ================= */
-  #grid-motion{
-    position:fixed; inset:0; z-index:0; pointer-events:none; opacity:.16; width:100%; height:100%;
+  /* ================= Modal "Reportar vacío" con efecto Pixel Card al aparecer ================= */
+  #report-backdrop{
+    position:fixed; inset:0; z-index:200; display:none; align-items:center; justify-content:center; padding:20px;
+    background:rgba(20,20,20,0); backdrop-filter:blur(0px); transition:background .35s var(--smooth), backdrop-filter .35s var(--smooth);
   }
-  #app-content{ position:relative; z-index:1; }
-
-  /* ================= Disolución del logo al hacer scroll ================= */
-  .top .logo-wrap{ transition:opacity .1s linear, filter .1s linear, transform .1s linear; }
-
-  /* ================= Pie de página con brillo de borde animado ================= */
-  .footer-wrap{ max-width:560px; margin:20px auto 60px; padding:0 32px; position:relative; z-index:1; }
-  .glow-box{
-    position:relative; border-radius:20px; padding:1.5px; overflow:hidden;
+  #report-backdrop.show{ display:flex; background:rgba(20,20,20,.45); backdrop-filter:blur(6px); }
+  #report-card{
+    position:relative; width:100%; max-width:420px; padding:1.5px; overflow:hidden;
+    transform:scale(.9) translateY(10px); opacity:0; transition:transform .5s var(--bounce), opacity .35s var(--smooth);
   }
-  .glow-box::before{
-    content:""; position:absolute; inset:-60%; z-index:0;
-    background:conic-gradient(from 0deg, transparent 0%, var(--accent) 12%, transparent 24%, transparent 60%, var(--accent-2) 72%, transparent 84%);
-    animation:borderSpin 5s linear infinite;
+  #report-backdrop.show #report-card{ transform:scale(1) translateY(0); opacity:1; }
+  #report-card::before{
+    content:""; position:absolute; inset:-80%; z-index:0;
+    background:conic-gradient(from 0deg, transparent 0%, var(--accent) 10%, transparent 22%, transparent 55%, #17171A 66%, transparent 78%);
+    animation:borderSpin 4.5s linear infinite;
   }
   @keyframes borderSpin{ to{ transform:rotate(360deg); } }
-  .glow-box-inner{
-    position:relative; z-index:1; background:#0D0D10; border-radius:18.5px; padding:18px 22px;
-    text-align:center;
+  #report-card-inner{ position:relative; z-index:1; background:var(--frame); overflow:hidden; }
+  #pixel-canvas{ position:absolute; inset:0; z-index:2; pointer-events:none; width:100%; height:100%; }
+  #report-close{
+    position:absolute; top:14px; right:14px; z-index:3; width:28px; height:28px; border-radius:50%;
+    border:1.5px solid var(--line); background:var(--frame); cursor:pointer; font-size:13px;
   }
-  .glow-box-inner p{ margin:0; font-size:12.5px; line-height:1.6; color:var(--muted); }
-  .glow-box-inner strong{ color:var(--ink); }
+  .report-content{ position:relative; z-index:1; padding:34px 28px 28px; }
+  .report-eyebrow{ font-size:10px; font-weight:700; color:var(--accent); text-transform:uppercase; letter-spacing:.1em; margin-bottom:10px; }
+  .report-content h3{ font-family:var(--font-mono); font-size:19px; line-height:1.35; margin:0 0 12px; }
+  .report-content p{ font-size:13px; color:var(--muted); line-height:1.6; margin:0 0 22px; }
+  .report-content p b{ color:var(--ink); }
+
+  @media(max-width:760px){
+    header{ padding:14px 18px; }
+    nav{ display:none; }
+    .mobile-links{ display:flex; gap:8px; padding:0 18px 18px; }
+    .hero{ padding:28px 18px 20px; }
+    .stats-row{ grid-template-columns:1fr 1fr; }
+    .stats-row > div:nth-child(2){ border-right:none; }
+    .stats-row > div:nth-child(3){ border-right:none; border-top:1.5px solid var(--line); grid-column:span 2; }
+    .destacada-wrap, .filtro-row, .cta{ padding-left:18px; padding-right:18px; }
+    .destacada{ flex-direction:column; }
+    .destacada-stats{ flex-wrap:wrap; }
+    .destacada-stats > div{ flex:1 1 33%; min-width:0; padding:14px 12px; }
+    .destacada-main{ border-right:none; border-bottom:1.5px solid var(--line-soft); }
+    .cat-grid{ grid-template-columns:1fr; }
+    .cat-card{ border-right:none !important; min-height:auto; padding:18px; }
+    .search-wrap{ width:100%; margin-left:0; }
+    .filtro-row{ flex-direction:column; align-items:stretch; }
+    #detalle-inner, #search-results{ padding-left:18px; padding-right:18px; }
+    .detalle-head{ padding:14px 18px; }
+  }
 
   @media (prefers-reduced-motion: reduce){
-    html{ scroll-behavior:auto; }
-    *{ transition:none !important; animation:none !important; }
+    html{ scroll-behavior:auto; } *{ transition:none !important; animation:none !important; }
   }
 </style>
 </head>
 <body>
+<canvas id="dither-bg"></canvas>
+<div class="frame">
+  <header>
+    <div class="brand">
+      <div class="logo-wrap"><img src="occasus-logo.webp" alt="Occasus"><div class="logo-shimmer"></div></div>
+      <div><b>OCCASUS</b><span>Estado · Código Legal</span></div>
+    </div>
+    <nav>
+      <a id="nav-inicio" class="pre-scramble">Inicio</a>
+      <a id="mega-trigger" class="pre-scramble">Secciones ▾</a>
+      <a id="nav-bolsa" class="pre-scramble">Bolsa</a>
+      <a id="nav-anexo" class="pre-scramble">Anexo</a>
+      <a id="nav-estado" href="#" class="pre-scramble">Estado</a>
+    </nav>
+    <div class="header-spacer"></div>
+    <button class="btn-pill btn-reportar" id="btn-reportar-header">Reportar vacío</button>
+    <div id="mega-dropdown"><div id="mega-dropdown-inner"></div></div>
+  </header>
 
-<canvas id="grid-motion"></canvas>
-
-<div id="app-content">
-<div class="top">
-  <div class="logo-wrap"><div class="logo-glow"></div><img src="occasus-logo.webp" alt="Occasus"><div class="logo-shimmer"></div></div>
-  <h1>Occasus</h1>
-  <div class="search-wrap" id="search-wrap">
-    <input type="text" id="search" placeholder="Busca por número (1, 2, 3...) o una palabra del título" autocomplete="off">
-    <div class="search-overlay" id="search-overlay" aria-hidden="true"></div>
+  <div class="ticker-wrap">
+    <div class="ticker-track" id="ticker-track"></div>
   </div>
-</div>
 
-<div class="grid-wrap">
-  <div class="categories-grid" id="categories-grid">
+  <div class="hero">
+    <h1>CÓDI_<br>GO <span class="accent">LEGAL</span></h1>
+    <p class="sub">La constitución completa de Occasus — actualizada frente a cada mod, cada mecánica y cada vacío que hemos encontrado.</p>
+  </div>
+
+  <div class="stats-row">
+    <div><div class="label">Leyes vigentes</div><div class="value" id="stat-leyes">0</div></div>
+    <div><div class="label">Secciones</div><div class="value" id="stat-secciones">0</div></div>
+    <div><div class="label">Última añadida</div><div class="value" style="font-size:17px;">Art. 49</div></div>
+  </div>
+
+  <div class="mobile-links" id="mobile-links">
+    <a id="mobile-bolsa">Ver Bolsa</a><a id="mobile-anexo">Ver Anexo</a><a id="mobile-estado">El Estado</a>
+  </div>
+
+  <div class="destacada-wrap">
+    <div class="destacada-eyebrow">Ley destacada</div>
+    <div class="destacada">
+      <div class="destacada-main">
+        <div class="destacada-tags"><span class="tag-chip new pre-scramble">Nueva</span><span class="tag-chip cat pre-scramble">Sección V</span></div>
+        <h3 class="pre-scramble">Art. 49 — Ley del Puerto y las Embarcaciones</h3>
+        <p>Toda embarcación debe adquirirse ante el dueño del puerto. La compra queda registrada por escrito, y usarla sin comprarla se castiga como hurto de propiedad estatal.</p>
+      </div>
+      <div class="destacada-stats">
+        <div><div class="n">1</div><div class="l">Art. nuevo</div></div>
+        <div><div class="n">51</div><div class="l">Enlaza con</div></div>
+        <div><div class="n">V</div><div class="l">Sección</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="filtro-row">
+    <button class="filtro-tab active pre-scramble">Todas</button>
+    <div class="search-wrap" id="search-wrap">
+      <input type="text" id="search" placeholder="Buscar ley..." autocomplete="off">
+      <div class="search-overlay" id="search-overlay" aria-hidden="true"></div>
+    </div>
+  </div>
+
+  <div class="cat-grid" id="cat-grid">
     
-    <div class="cat-tile reveal" data-idx="0">
-      <div class="tile-spot"></div>
-      <div class="tile-content">
-        <div class="tile-badge">I</div>
-        <div class="tile-name">Orden Civil, Urbanismo y Burocracia Real</div>
-        <div class="tile-count">10 leyes</div>
+    <div class="cat-card" data-idx="0">
+      <div class="cat-tag pre-scramble">Civil</div>
+      <div class="cat-name pre-scramble">Orden Civil, Urbanismo y Burocracia Real</div>
+      <div class="cat-stats">
+        <div class="cat-stat"><b>10</b><span>Leyes</span></div>
+        <div class="cat-stat"><b>Sec. I</b><span>Referencia</span></div>
+        <button class="cat-arrow" aria-label="Ver">→</button>
       </div>
     </div>
-    <div class="cat-tile reveal" data-idx="1">
-      <div class="tile-spot"></div>
-      <div class="tile-content">
-        <div class="tile-badge">II</div>
-        <div class="tile-name">Sistema Monetario, Impuestos y Finanzas Estatales</div>
-        <div class="tile-count">10 leyes</div>
+    <div class="cat-card" data-idx="1">
+      <div class="cat-tag pre-scramble">Fiscal</div>
+      <div class="cat-name pre-scramble">Sistema Monetario, Impuestos y Finanzas Estatales</div>
+      <div class="cat-stats">
+        <div class="cat-stat"><b>10</b><span>Leyes</span></div>
+        <div class="cat-stat"><b>Sec. II</b><span>Referencia</span></div>
+        <button class="cat-arrow" aria-label="Ver">→</button>
       </div>
     </div>
-    <div class="cat-tile reveal" data-idx="2">
-      <div class="tile-spot"></div>
-      <div class="tile-content">
-        <div class="tile-badge">III</div>
-        <div class="tile-name">Código Penal, Combate de Fronteras y Consecuencias Letales</div>
-        <div class="tile-count">10 leyes</div>
+    <div class="cat-card" data-idx="2">
+      <div class="cat-tag pre-scramble">Penal</div>
+      <div class="cat-name pre-scramble">Código Penal, Combate de Fronteras y Consecuencias Letales</div>
+      <div class="cat-stats">
+        <div class="cat-stat"><b>10</b><span>Leyes</span></div>
+        <div class="cat-stat"><b>Sec. III</b><span>Referencia</span></div>
+        <button class="cat-arrow" aria-label="Ver">→</button>
       </div>
     </div>
-    <div class="cat-tile reveal" data-idx="3">
-      <div class="tile-spot"></div>
-      <div class="tile-content">
-        <div class="tile-badge">IV</div>
-        <div class="tile-name">Poder Judicial, Juicios y Ejecución de Penas</div>
-        <div class="tile-count">10 leyes</div>
+    <div class="cat-card" data-idx="3">
+      <div class="cat-tag pre-scramble">Judicial</div>
+      <div class="cat-name pre-scramble">Poder Judicial, Juicios y Ejecución de Penas</div>
+      <div class="cat-stats">
+        <div class="cat-stat"><b>10</b><span>Leyes</span></div>
+        <div class="cat-stat"><b>Sec. IV</b><span>Referencia</span></div>
+        <button class="cat-arrow" aria-label="Ver">→</button>
       </div>
     </div>
-    <div class="cat-tile reveal" data-idx="4">
-      <div class="tile-spot"></div>
-      <div class="tile-content">
-        <div class="tile-badge">V</div>
-        <div class="tile-name">Regulaciones Generales, Tecnológicas y Orden Global</div>
-        <div class="tile-count">10 leyes</div>
+    <div class="cat-card" data-idx="4">
+      <div class="cat-tag pre-scramble">Técnica</div>
+      <div class="cat-name pre-scramble">Regulaciones Generales, Tecnológicas y Orden Global</div>
+      <div class="cat-stats">
+        <div class="cat-stat"><b>11</b><span>Leyes</span></div>
+        <div class="cat-stat"><b>Sec. V</b><span>Referencia</span></div>
+        <button class="cat-arrow" aria-label="Ver">→</button>
       </div>
     </div>
-    <div class="cat-tile reveal" data-idx="5">
-      <div class="tile-spot"></div>
-      <div class="tile-content">
-        <div class="tile-badge">VI</div>
-        <div class="tile-name">Registro Notarial, Subsidios e Investigación Estatal</div>
-        <div class="tile-count">3 leyes</div>
+    <div class="cat-card" data-idx="5">
+      <div class="cat-tag pre-scramble">Notarial</div>
+      <div class="cat-name pre-scramble">Registro Notarial, Subsidios e Investigación Estatal</div>
+      <div class="cat-stats">
+        <div class="cat-stat"><b>3</b><span>Leyes</span></div>
+        <div class="cat-stat"><b>Sec. VI</b><span>Referencia</span></div>
+        <button class="cat-arrow" aria-label="Ver">→</button>
       </div>
     </div>
-    <div class="cat-tile reveal" data-idx="6">
-      <div class="tile-spot"></div>
-      <div class="tile-content">
-        <div class="tile-badge">VII</div>
-        <div class="tile-name">Cronología del Progreso y Restricciones Temporales de Apertura</div>
-        <div class="tile-count">2 leyes</div>
+    <div class="cat-card" data-idx="6">
+      <div class="cat-tag pre-scramble">Progreso</div>
+      <div class="cat-name pre-scramble">Cronología del Progreso y Restricciones Temporales de Apertura</div>
+      <div class="cat-stats">
+        <div class="cat-stat"><b>2</b><span>Leyes</span></div>
+        <div class="cat-stat"><b>Sec. VII</b><span>Referencia</span></div>
+        <button class="cat-arrow" aria-label="Ver">→</button>
       </div>
     </div>
-    <div class="cat-tile reveal" data-idx="7">
-      <div class="tile-spot"></div>
-      <div class="tile-content">
-        <div class="tile-badge">VIII</div>
-        <div class="tile-name">Nuevas Mecánicas: Fauna, Combate y Objetos Especiales</div>
-        <div class="tile-count">5 leyes</div>
+    <div class="cat-card" data-idx="7">
+      <div class="cat-tag pre-scramble">Nueva</div>
+      <div class="cat-name pre-scramble">Nuevas Mecánicas: Fauna, Combate y Objetos Especiales</div>
+      <div class="cat-stats">
+        <div class="cat-stat"><b>5</b><span>Leyes</span></div>
+        <div class="cat-stat"><b>Sec. VIII</b><span>Referencia</span></div>
+        <button class="cat-arrow" aria-label="Ver">→</button>
       </div>
     </div>
-    <div class="cat-tile reveal" data-idx="8">
-      <div class="tile-spot"></div>
-      <div class="tile-content">
-        <div class="tile-badge">IX</div>
-        <div class="tile-name">Disposición General de Cierre</div>
-        <div class="tile-count">1 leyes</div>
+    <div class="cat-card" data-idx="8">
+      <div class="cat-tag pre-scramble">General</div>
+      <div class="cat-name pre-scramble">Disposición General de Cierre</div>
+      <div class="cat-stats">
+        <div class="cat-stat"><b>1</b><span>Leyes</span></div>
+        <div class="cat-stat"><b>Sec. IX</b><span>Referencia</span></div>
+        <button class="cat-arrow" aria-label="Ver">→</button>
       </div>
     </div>
   </div>
-  <div id="search-results" class="content"></div>
+
+  <div id="detalle-wrap">
+    <div class="detalle-head"><h3 id="detalle-titulo"></h3><button class="detalle-close" id="detalle-close">✕</button></div>
+    <div id="detalle-inner"></div>
+  </div>
+
+  <div id="info-wrap">
+    <div class="detalle-head"><h3 id="info-titulo"></h3><button class="detalle-close" id="info-close">✕</button></div>
+    <div id="info-inner"></div>
+  </div>
+
+  <div id="bolsa-wrap">
+    <div class="detalle-head"><h3>La Bolsa de Occasus</h3><button class="detalle-close" id="bolsa-close">✕</button></div>
+    <p class="bolsa-sub">Las 5 empresas fundacionales del Estado, su precio y su historial — misma información que verás en el Banco dentro del juego.</p>
+
+    <div class="bolsa-stats-row">
+      <div><div class="label">Capitalización total</div><div class="value" id="bolsa-stat-cap">0$</div></div>
+      <div><div class="label">Volatilidad media</div>
+        <div class="slider-track"><div class="slider-fill" id="bolsa-vol-fill"></div><div class="slider-dot" id="bolsa-vol-dot"></div></div>
+        <div class="slider-range"><span>0.5</span><span>2.5</span></div>
+      </div>
+      <div><div class="label">Unidades en circulación</div>
+        <div class="slider-track"><div class="slider-fill" id="bolsa-units-fill"></div><div class="slider-dot" id="bolsa-units-dot"></div></div>
+        <div class="slider-range"><span>0</span><span>250K</span></div>
+      </div>
+    </div>
+
+    <div class="bolsa-layout">
+      <div class="side-cards" id="bolsa-side-cards"></div>
+      <div class="main-panel">
+        <div class="main-top">
+          <div id="bolsa-titulo-activa"></div>
+          <div class="spacer"></div>
+          <button class="icon-btn" id="bolsa-zoom-out">−</button>
+          <button class="icon-btn" id="bolsa-zoom-in">+</button>
+        </div>
+        <div id="bolsa-chart-wrap">
+          <div class="chart-dot" id="bolsa-chart-dot"></div>
+          <canvas id="bolsa-chart-canvas"></canvas>
+          <div class="tooltip-card" id="bolsa-tooltip-card">
+            <div class="tdate" id="bolsa-tt-date"></div>
+            <div class="tprice" id="bolsa-tt-price"></div>
+            <div class="tlabel">Precio en esa vela</div>
+            <div class="tprice" id="bolsa-tt-units" style="font-size:13px"></div>
+            <div class="tlabel">Unidades en el mercado</div>
+          </div>
+        </div>
+        <div class="chart-labels" id="bolsa-chart-labels"></div>
+      </div>
+    </div>
+
+    <div class="bolsa-bottom-cards">
+      <div class="bottom-card">
+        <div><div class="t">¿Cómo compro de verdad?</div><div class="s">La compra se hace dentro del juego, en el Banco</div></div>
+        <button id="bolsa-btn-comprar">Ver cómo</button>
+      </div>
+      <div class="bottom-card discord">
+        <div><div class="t">Habla con el Estado</div><div class="s">Dudas, sugerencias o negociar como fundador</div></div>
+        <button onclick="window.open('https://discord.com/channels/1521831734218592276/1521911230451810314','_blank')">Abrir Discord</button>
+      </div>
+    </div>
+
+    <div class="sync-note">
+      <b>Sobre estos datos:</b> esta sección muestra un ejemplo con las 5 empresas base de Occasus. La sincronización en vivo con el juego (ver Y comprar reflejado al instante) es el siguiente paso, conectando el addon a Firebase.
+    </div>
+  </div>
+
+  <div id="search-results"></div>
   <div id="no-results">No se encontró ninguna ley con esa búsqueda.</div>
-</div>
 
-<div class="footer-wrap">
-  <div class="glow-box">
-    <div class="glow-box-inner">
-      <p><strong>Occasus está vivo.</strong><br>Esta página se actualizará cuando el Estado lo necesite, y con el tiempo irá sumando nuevas funciones.</p>
+  <div class="cta">
+    <div class="cta-text">¿ENCONTRASTE UN VACÍO LEGAL?<span>Se notifica al Estado y se compensa económicamente (art. 62).</span></div>
+    <div class="cta-btns">
+      <button class="btn-pill btn-reportar">Reportar vacío</button>
     </div>
   </div>
 </div>
-</div>
 
-<div id="overlay-bg"></div>
-<div id="cat-expanded">
-  <div class="exp-top">
-    <button class="exp-close" id="exp-close">✕</button>
-    <div class="exp-badge" id="exp-badge"></div>
-    <div class="exp-title" id="exp-title"></div>
+<div id="report-backdrop">
+  <div id="report-card">
+    <div id="report-card-inner">
+      <canvas id="pixel-canvas"></canvas>
+      <button id="report-close">✕</button>
+      <div class="report-content">
+        <div class="report-eyebrow">Estado de Occasus</div>
+        <h3>Reporta el vacío que hayas encontrado</h3>
+        <p>En <b>tickets</b>, negocia tu compensación. Ayuda a Occasus a ser un lugar mejor.</p>
+        <a class="btn-pill" href="https://discord.com/channels/1521831734218592276/1521911230451810314" target="_blank" rel="noopener">Abrir tickets en Discord</a>
+      </div>
+    </div>
   </div>
-  <div class="exp-body" id="exp-body"></div>
 </div>
 
 <script>
+const PANELS = [{"n": "I", "titulo": "Orden Civil, Urbanismo y Burocracia Real", "leyes": [[1, "Ley de la Paz Urbana", "El vandalismo o alteración no autorizada de la infraestructura pública de la ciudad se castiga con trabajo forzado reparando los daños o cárcel."], [2, "Ley de la Propiedad Viva", "El robo a cualquier ciudadano vivo es un delito grave. Infringirlo conlleva una pena directa de cárcel o trabajo forzado para devolver lo robado."], [3, "Ley del Registro de Ciudadanía", "Todo jugador que desee residir o edificar en la ciudad debe firmar el censo municipal; no hacerlo se penaliza con cárcel preventiva."], [4, "Ley de Zonificación y Estética", "Las construcciones fuera de la normativa estética o flotantes serán demolidas, y su creador será condenado a trabajo forzado de limpieza."], [5, "Ley del Espacio Público", "Obstruir de forma deliberada los caminos o plazas estatales de la ciudad conlleva una pena inmediata de cárcel."], [6, "Ley de la Salubridad y Seguridad Pública", "Dejar propiedades a oscuras permitiendo el desove de monstruos dentro de la ciudad se sanciona con trabajo forzado de iluminación urbana."], [7, "Ley de la Infraestructura de Conectividad", "Bloquear o destruir las carreteras y puentes estatales que conectan la ciudad con el exterior se castiga con trabajo forzado."], [8, "Ley de la Fauna Urbana", "Dañar o confiscar animales de granja ajenos o públicos se penaliza con cárcel o la reposición mediante trabajo forzado."], [9, "Ley de Gestión de Residuos", "Arrojar basura u objetos inútiles al suelo de la ciudad de manera reiterada conlleva una condena menor de trabajo forzado."], [10, "Ley de la Libre Asociación", "Fundar gremios o empresas secretas sin registrar sus estatutos ante el tribunal se castiga con la cárcel de sus fundadores."]]}, {"n": "II", "titulo": "Sistema Monetario, Impuestos y Finanzas Estatales", "leyes": [[11, "Ley de la Moneda de Curso Legal", "Utilizar divisas no oficiales para transacciones dentro de la ciudad conlleva el decomiso de los bienes y cárcel."], [12, "Ley del Tributo Obligatorio (Impuestos)", "Cada ciudadano debe abonar su impuesto fiscal semanal en la moneda oficial ante el Banquero de la ciudad, quedando el pago depositado de forma automática e inmediata en el Tesoro municipal; evadirlo resulta en trabajo forzado para el Estado."], [13, "Ley del Presupuesto Municipal", "El uso indebido de los fondos del Tesoro destinados al mantenimiento de las defensas del Estado se castiga con pena de muerte."], [14, "Ley del Impuesto Predial", "Negarse a pagar el recargo fiscal por poseer parcelas de gran tamaño dentro de la ciudad se sanciona con la condena a trabajo forzado."], [15, "Ley del Registro de Transacciones Grandes", "Todo intercambio financiero masivo de recursos deberá constar por escrito en documento firmado y registrado ante el Ayuntamiento; realizar u ocultar estas operaciones sin registro se penaliza con cárcel."], [16, "Ley de la Evasión Fiscal", "La resistencia continuada al pago de tributos semanales se resolverá enviando al ciudadano a cumplir una pena de trabajo forzado."], [17, "Ley de la Insolvencia Financiera", "Si un ciudadano quiebra y no puede pagar sus deudas fiscales, el tribunal le impondrá trabajo forzado equivalente a su deuda."], [18, "Ley de las Licencias Comerciales", "Abrir un establecimiento en el mercado sin licencia firmada conlleva la clausura del local y cárcel para el dueño."], [19, "Ley del Fraude de Subsidios", "Mentir al tribunal para obtener exenciones fiscales temporales se castiga severamente con un castigo indeterminado fijado por el staff."], [20, "Ley del Desacato Financiero", "Intentar sobornar al recaudador de impuestos de la ciudad se penaliza con cárcel inmediata."]]}, {"n": "III", "titulo": "Código Penal, Combate de Fronteras y Consecuencias Letales", "leyes": [[21, "Ley del Libre Albedrío Exterior", "El combate y las disputas de sangre están permitidas fuera de las fronteras; los delitos ahí cometidos reciben un castigo indeterminado."], [22, "Ley de la Consecuencia Letal", "Matar a un ciudadano fuera de la ley dentro del mundo de Occasus es definitivo; el asesino será condenado a la pena de muerte."], [23, "Ley del Santuario Urbano (Zona Neutral)", "Iniciar un combate, desenvainar armas o derramar sangre dentro de los límites de la ciudad se castiga con la pena de muerte."], [24, "Ley de la Legítima Defensa", "Todo ciudadano que sea agredido dentro de su propiedad tiene derecho a defenderse; si el agresor sobrevive, irá a la cárcel."], [25, "Ley del Último Aliento (Combat Log)", "Desconectarse en medio de un combate o juicio penal provoca la ejecución automática del personaje mediante la pena de muerte."], [26, "Ley del Cadáver Huérfano", "Saquear el cuerpo de un jugador muerto antes de que el tribunal revise sus causas se penaliza con un castigo indeterminado."], [27, "Ley del Robo de Sucesión", "Apropiarse de los cofres de un fallecido que dejó un testamento legal firmado en la alcaldía se castiga con trabajo forzado."], [28, "Ley del Asesinato en Serie", "La caza sistemática y despiadada de ciudadanos indefensos fuera de la ciudad es terrorismo y se castiga con la pena de muerte."], [29, "Ley del Cebo y la Traición", "Forzar a un conciudadano vivo a activar trampas mortales o usarlo como cebo sin su consentimiento conlleva la pena de muerte."], [30, "Ley de la Reencarnación Ilegal", "Usar cuentas secundarias para infiltrarse en la ciudad tras haber muerto permanentemente se penaliza con un castigo indeterminado."]]}, {"n": "IV", "titulo": "Poder Judicial, Juicios y Ejecución de Penas", "leyes": [[31, "Ley del Tribunal Supremo de Occasus", "Todos los conflictos de la ciudad serán juzgados en la corte; el desacato a sus audiencias se castiga con cárcel."], [32, "Ley del Cumplimiento de las Normas", "Es una obligación civil conocer este código; violarlo deliberadamente o alegar ignorancia resulta en trabajo forzado."], [33, "Ley de la Presunción de Inocencia", "Todo acusado es inocente hasta que se presenten pruebas; los documentos sellados del Archivo Municipal y los resultados de las investigaciones estatales tienen valor probatorio pleno ante el Tribunal. Falsificar evidencias para incriminar a otro se castiga con cárcel."], [34, "Ley de la Magistratura (El Staff)", "Los administradores imponen las sentencias; rebelarse contra una decisión del staff conlleva un castigo indeterminado."], [35, "Ley de la Denuncia Formal", "Presentar demandas falsas o frívolas ante el tribunal para hacer perder el tiempo a la corte se penaliza con trabajo forzado."], [36, "Ley del Intento de Fuga", "Intentar escapar de la zona de cárcel o negarse a realizar el trabajo forzado asignado eleva la condena a pena de muerte."], [37, "Ley de la Complicidad Criminal", "Ayudar a un delincuente a esconderse o a evadir sus impuestos dentro del pueblo se castiga con la cárcel."], [38, "Ley de la Alta Traición", "Conspirar para destruir la ciudad o sabotear técnicamente el servidor se castiga de forma irrevocable con la pena de muerte."], [39, "Ley del Desacato al Tribunal", "Interrumpir un juicio en curso o insultar a los magistrados conllevará el ingreso inmediato a la cárcel."], [40, "Ley del Incumplimiento de Condena", "Si el infractor se niega a someterse a la corte, el staff aplicará sobre él un castigo indeterminado."]]}, {"n": "V", "titulo": "Regulaciones Generales, Tecnológicas y Orden Global", "leyes": [[41, "Ley de la Pureza Visual", "El uso de texturas X-Ray, hacks de iluminación ajenos al modpack oficial de la ciudad, o el uso de páginas y herramientas externas para obtener ventaja indebida sobre otros ciudadanos (como localizar estructuras, recursos o jugadores sin haberlos descubierto dentro del propio juego), se penaliza con un castigo indeterminado. El modpack oficial vigente es el recogido en el Anexo I de este código; cualquier paquete no listado allí se considera no autorizado."], [42, "Ley del Equilibrio Técnico", "Explotar mecánicas bugeadas o hechizos rotos de los mods para saltarse las prisiones o las leyes resulta en pena de muerte."], [43, "Ley de la Automatización Sostenible", "Si una industria pesada o granja mágica genera lag al servidor y el dueño se niega a apagarla, irá a la cárcel."], [44, "Ley de la Seguridad Patrimonial Oculta", "Esconder cofres con riquezas o tecnología prohibida del servidor dentro del área urbana sin registrar su contenido se castiga con trabajo forzado."], [45, "Ley del Monopolio de Estructuras", "Apropiarse ilegalmente de la totalidad de las mazmorras naturales generadas por los mods se penaliza con trabajo forzado."], [46, "Ley de la Alquimia Prohibida", "La duplicación de objetos mediante fallos del modpack es un crimen económico supremo; se aplica un castigo indeterminado."], [47, "Ley de la Transparencia Territorial", "Todo ciudadano está obligado por ley a declarar ante el Estado las coordenadas exactas de su vivienda principal, búnkeres y posesiones de valor; el ocultamiento de propiedades se castiga con cárcel."], [48, "Ley de la Red de Portales", "Queda estrictamente prohibido alterar, apagar o bloquear los portales de transporte público o estatales de la ciudad; cualquier daño a la red de portales se castiga con trabajo forzado."], [49, "Ley del Puerto y las Embarcaciones", "Toda embarcación debe adquirirse ante el dueño del puerto (actualmente el Estado, hasta que un ciudadano compre la concesión portuaria). Cada compra deberá quedar recogida por escrito conforme a la Ley del Documento Sellado (art. 51), con copia para el comprador y original archivado en el Ayuntamiento. Usar una embarcación sin haberla comprado se considera hurto de propiedad estatal y se castiga con trabajo forzado o cárcel."], [50, "Ley del Secreto de Estado", "Revelar por el chat global las coordenadas de búnkeres estratégicos o puestos de avanzada urbanos de otros ciudadanos vivos se sanciona con cárcel. Esta protección se extiende a cualquier medio de descubrimiento a distancia (incluidas tecnologías de renderizado extendido): localizar instalaciones ajenas no declaradas por este medio y explotar o divulgar esa información sin autorización se juzga como espionaje bajo esta misma ley."], [51, "Ley del Desacato ante el Comité", "Desobedecer las directrices del consejo municipal o del staff durante los disturbios urbanos de juego se castigará con un castigo indeterminado."]]}, {"n": "VI", "titulo": "Registro Notarial, Subsidios e Investigación Estatal", "leyes": [[52, "Ley del Documento Sellado (Registro Notarial)", "Todo acto de relevancia legal (juicios y sentencias, tratos y contratos, compraventas, testamentos, declaraciones e intercambios de gran volumen) deberá quedar recogido en un libro firmado por sus partes. De todo documento firmado se hará obligatoriamente copia: el original se archiva en el Ayuntamiento y la copia queda en poder del interesado. Ningún trato sin registro tendrá validez ante el Tribunal Supremo de Occasus."], [53, "Ley del Subsidio Ciudadano", "Todo ciudadano censado tiene derecho a percibir del Banquero de la ciudad un subsidio estatal de $100, una única vez cada 24 horas del mundo real. Intentar cobrarlo de nuevo antes de plazo, o obtenerlo mediante engaño o cuentas ajenas, se penaliza con cárcel."], [54, "Ley de la Trazabilidad Estatal", "El Estado de Occasus dispone de los medios necesarios para investigar y reconstruir las acciones y desplazamientos de cualquier ciudadano cuando exista causa legal: denuncia formal, juicio en curso o investigación abierta por el Tribunal. Ningún ciudadano podrá alegar desconocimiento de esta capacidad, y obstruir o intentar burlar una investigación estatal se castiga con cárcel."]]}, {"n": "VII", "titulo": "Cronología del Progreso y Restricciones Temporales de Apertura", "leyes": [[55, "Ley del Bloqueo Dimensional del Nether", "Queda estrictamente prohibido el acceso, la exploración o el establecimiento de portales hacia la dimensión del Nether antes de cumplirse el Día 6 del servidor. La frontera dimensional permanecerá sellada por decreto hasta esa fecha, y su apertura será proclamada oficialmente por el Estado. El traspaso prematuro de esta frontera (ya sea mediante fallos técnicos, accesos ocultos o portales clandestinos) será considerado desacato al calendario estatal y se sancionará con un castigo indeterminado, además de la destrucción inmediata del portal infractor."], [56, "Ley de la Veda de Minerales Superiores", "La extracción, posesión, ocultamiento o comercio de diamantes, netherite y demás materiales de gama alta queda completamente suspendida hasta alcanzar el Día 3 del servidor. Todo material superior obtenido antes del levantamiento de la veda será requisado de inmediato y pasará a engrosar el Tesoro municipal, y el infractor será condenado a trabajo forzado. El Estado se reserva el derecho de investigar el origen y la fecha de obtención de cualquier mineral superior que circule por la ciudad."]]}, {"n": "VIII", "titulo": "Nuevas Mecánicas: Fauna, Combate y Objetos Especiales", "leyes": [[57, "Ley del Botín Funerario", "Cuando un ciudadano fallece y deja tras de sí una lápida con sus pertenencias, dicha lápida se considera legalmente equivalente al cuerpo del difunto a todos los efectos: saquearla antes de que el Tribunal revise las causas de la muerte, o antes de que el propio fallecido decida sobre su Renacer, se penaliza igual que la Ley del Cadáver Huérfano (art. 26). Si el fallecido tenía testamento firmado, el contenido de la lápida sigue las reglas de la Ley del Robo de Sucesión (art. 27)."], [58, "Ley de la Negligencia en Combate", "El barrido propio de las mecánicas de combate no exime de responsabilidad: golpear a un ciudadano ajeno al conflicto, o herir a alguien dentro del Santuario Urbano por un barrido no dirigido, se juzga con la misma severidad que un ataque deliberado (arts. 23 y 24). La excusa de \"fue sin querer por el barrido\" no exime de la pena."], [59, "Ley de las Monturas y Mascotas Civiles", "Toda montura domesticada (aves, corceles u otras criaturas domadas) y toda mascota vinculada a un ciudadano se considera propiedad viva a todos los efectos (arts. 2 y 8). Robar, herir de forma deliberada o liberar sin consentimiento la montura o mascota de otro ciudadano se castiga como robo de propiedad bajo la Ley de la Propiedad Viva."], [60, "Ley de la Cosecha Ajena", "Recolectar cultivos, huertos o granjas de un ciudadano sin su permiso, por cualquier medio (incluida la recolección rápida o cualquier método que evite la interacción normal de cosecha), constituye robo bajo la Ley de la Propiedad Viva (art. 2)."], [61, "Ley de la Precedencia del Renacer", "El protocolo oficial de resurrección del Estado (Renacer) es la única vía reconocida para regresar de la muerte permanente. Cualquier mecánica alternativa de reaparición, desbloqueo o reanimación ajena a este protocolo carece de validez legal, y su uso deliberado para sortear el pago o las condiciones oficiales del Renacer se considera Alquimia Prohibida (art. 46)."]]}, {"n": "IX", "titulo": "Disposición General de Cierre", "leyes": [[62, "Ley de Cierre de Vacíos (Cláusula General)", "Ninguna mecánica, mod, objeto o exploit no contemplado expresamente en este código exime a un ciudadano de responsabilidad si su uso causa perjuicio real a otro ciudadano, al Estado o a la integridad del servidor. El Tribunal juzgará estos casos por analogía con la ley existente que más se asemeje en espíritu y consecuencia. La ignorancia de una mecánica nueva introducida por un mod no es excusa válida ante el Tribunal. Todo ciudadano que detecte un vacío legal deberá notificarlo al Estado; hacerlo será recompensado con una compensación monetaria a determinar por la administración."]]}];
 (function(){
   "use strict";
 
-  /* ---------- Fondo animado tipo "Grid Motion": rejilla de puntos que se mueve despacio ---------- */
-  (function gridMotion(){
-    const canvas = document.getElementById("grid-motion");
+  /* ---------- Fondo Dither: ondas retro con dithering ordenado ---------- */
+  (function ditherBg(){
+    const canvas = document.getElementById("dither-bg");
     const ctx = canvas.getContext("2d");
     let W, H;
     function resize(){ W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
     window.addEventListener("resize", resize); resize();
-    const espacio = 46;
+    const bayer = [[0,8,2,10],[12,4,14,6],[3,11,1,9],[15,7,13,5]];
+    const celda = 5;
     let t = 0;
-    function draw(){
+    function frame(){
       ctx.clearRect(0,0,W,H);
-      const cols = Math.ceil(W/espacio)+2, rows = Math.ceil(H/espacio)+2;
-      for (let i=0;i<cols;i++){
-        for (let j=0;j<rows;j++){
-          const ox = Math.sin(t*0.5 + i*0.6 + j*0.3) * 6;
-          const oy = Math.cos(t*0.5 + j*0.6 + i*0.3) * 6;
-          const x = i*espacio + ox - espacio;
-          const y = j*espacio + oy - espacio;
-          const pulso = (Math.sin(t + i*0.4 + j*0.4) + 1) / 2;
-          ctx.beginPath();
-          ctx.arc(x, y, 1 + pulso*1.2, 0, Math.PI*2);
-          ctx.fillStyle = `rgba(140,150,255,${0.10 + pulso*0.16})`;
-          ctx.fill();
+      const cols = Math.ceil(W/celda), rows = Math.ceil(H/celda);
+      for (let cy=0; cy<rows; cy++){
+        for (let cx=0; cx<cols; cx++){
+          const x = cx*celda, y = cy*celda;
+          const onda = Math.sin(x*0.02 + t) * Math.cos(y*0.025 - t*0.7);
+          const brillo = (onda + 1) / 2;
+          const umbral = bayer[cy % 4][cx % 4] / 16;
+          if (brillo > umbral){
+            const intensidad = Math.min(1, (brillo - umbral) * 2);
+            ctx.fillStyle = `rgba(20,20,20,${(intensidad*0.05).toFixed(3)})`;
+            ctx.fillRect(x, y, celda-1, celda-1);
+          }
         }
       }
-      t += 0.006;
-      requestAnimationFrame(draw);
+      t += 0.012;
+      requestAnimationFrame(frame);
     }
-    draw();
+    frame();
   })();
 
-  /* ---------- Disolución del logo al hacer scroll ---------- */
-  (function disolverLogo(){
-    const wrap = document.querySelector(".top .logo-wrap");
-    if (!wrap) return;
-    const alturaRef = window.innerHeight * 0.4;
-    function actualizar(){
-      const progreso = Math.min(1, Math.max(0, window.scrollY / alturaRef));
-      wrap.style.opacity = String(1 - progreso);
-      wrap.style.filter = `blur(${progreso*10}px)`;
-      wrap.style.transform = `scale(${1 + progreso*0.35}) translateY(${progreso*-18}px)`;
-    }
-    window.addEventListener("scroll", actualizar, { passive:true });
-    actualizar();
-  })();
 
-  const PANELS = [{"n": "I", "titulo": "Orden Civil, Urbanismo y Burocracia Real", "leyes": [[1, "Ley de la Paz Urbana", "El vandalismo o alteración no autorizada de la infraestructura pública de la ciudad se castiga con trabajo forzado reparando los daños o cárcel."], [2, "Ley de la Propiedad Viva", "El robo a cualquier ciudadano vivo es un delito grave. Infringirlo conlleva una pena directa de cárcel o trabajo forzado para devolver lo robado."], [3, "Ley del Registro de Ciudadanía", "Todo jugador que desee residir o edificar en la ciudad debe firmar el censo municipal; no hacerlo se penaliza con cárcel preventiva."], [4, "Ley de Zonificación y Estética", "Las construcciones fuera de la normativa estética o flotantes serán demolidas, y su creador será condenado a trabajo forzado de limpieza."], [5, "Ley del Espacio Público", "Obstruir de forma deliberada los caminos o plazas estatales de la ciudad conlleva una pena inmediata de cárcel."], [6, "Ley de la Salubridad y Seguridad Pública", "Dejar propiedades a oscuras permitiendo el desove de monstruos dentro de la ciudad se sanciona con trabajo forzado de iluminación urbana."], [7, "Ley de la Infraestructura de Conectividad", "Bloquear o destruir las carreteras y puentes estatales que conectan la ciudad con el exterior se castiga con trabajo forzado."], [8, "Ley de la Fauna Urbana", "Dañar o confiscar animales de granja ajenos o públicos se penaliza con cárcel o la reposición mediante trabajo forzado."], [9, "Ley de Gestión de Residuos", "Arrojar basura u objetos inútiles al suelo de la ciudad de manera reiterada conlleva una condena menor de trabajo forzado."], [10, "Ley de la Libre Asociación", "Fundar gremios o empresas secretas sin registrar sus estatutos ante el tribunal se castiga con la cárcel de sus fundadores."]]}, {"n": "II", "titulo": "Sistema Monetario, Impuestos y Finanzas Estatales", "leyes": [[11, "Ley de la Moneda de Curso Legal", "Utilizar divisas no oficiales para transacciones dentro de la ciudad conlleva el decomiso de los bienes y cárcel."], [12, "Ley del Tributo Obligatorio (Impuestos)", "Cada ciudadano debe abonar su impuesto fiscal semanal en la moneda oficial ante el Banquero de la ciudad, quedando el pago depositado de forma automática e inmediata en el Tesoro municipal; evadirlo resulta en trabajo forzado para el Estado."], [13, "Ley del Presupuesto Municipal", "El uso indebido de los fondos del Tesoro destinados al mantenimiento de las defensas del Estado se castiga con pena de muerte."], [14, "Ley del Impuesto Predial", "Negarse a pagar el recargo fiscal por poseer parcelas de gran tamaño dentro de la ciudad se sanciona con la condena a trabajo forzado."], [15, "Ley del Registro de Transacciones Grandes", "Todo intercambio financiero masivo de recursos deberá constar por escrito en documento firmado y registrado ante el Ayuntamiento; realizar u ocultar estas operaciones sin registro se penaliza con cárcel."], [16, "Ley de la Evasión Fiscal", "La resistencia continuada al pago de tributos semanales se resolverá enviando al ciudadano a cumplir una pena de trabajo forzado."], [17, "Ley de la Insolvencia Financiera", "Si un ciudadano quiebra y no puede pagar sus deudas fiscales, el tribunal le impondrá trabajo forzado equivalente a su deuda."], [18, "Ley de las Licencias Comerciales", "Abrir un establecimiento en el mercado sin licencia firmada conlleva la clausura del local y cárcel para el dueño."], [19, "Ley del Fraude de Subsidios", "Mentir al tribunal para obtener exenciones fiscales temporales se castiga severamente con un castigo indeterminado fijado por el staff."], [20, "Ley del Desacato Financiero", "Intentar sobornar al recaudador de impuestos de la ciudad se penaliza con cárcel inmediata."]]}, {"n": "III", "titulo": "Código Penal, Combate de Fronteras y Consecuencias Letales", "leyes": [[21, "Ley del Libre Albedrío Exterior", "El combate y las disputas de sangre están permitidas fuera de las fronteras; los delitos ahí cometidos reciben un castigo indeterminado."], [22, "Ley de la Consecuencia Letal", "Matar a un ciudadano fuera de la ley dentro del mundo de Occasus es definitivo; el asesino será condenado a la pena de muerte."], [23, "Ley del Santuario Urbano (Zona Neutral)", "Iniciar un combate, desenvainar armas o derramar sangre dentro de los límites de la ciudad se castiga con la pena de muerte."], [24, "Ley de la Legítima Defensa", "Todo ciudadano que sea agredido dentro de su propiedad tiene derecho a defenderse; si el agresor sobrevive, irá a la cárcel."], [25, "Ley del Último Aliento (Combat Log)", "Desconectarse en medio de un combate o juicio penal provoca la ejecución automática del personaje mediante la pena de muerte."], [26, "Ley del Cadáver Huérfano", "Saquear el cuerpo de un jugador muerto antes de que el tribunal revise sus causas se penaliza con un castigo indeterminado."], [27, "Ley del Robo de Sucesión", "Apropiarse de los cofres de un fallecido que dejó un testamento legal firmado en la alcaldía se castiga con trabajo forzado."], [28, "Ley del Asesinato en Serie", "La caza sistemática y despiadada de ciudadanos indefensos fuera de la ciudad es terrorismo y se castiga con la pena de muerte."], [29, "Ley del Cebo y la Traición", "Forzar a un conciudadano vivo a activar trampas mortales o usarlo como cebo sin su consentimiento conlleva la pena de muerte."], [30, "Ley de la Reencarnación Ilegal", "Usar cuentas secundarias para infiltrarse en la ciudad tras haber muerto permanentemente se penaliza con un castigo indeterminado."]]}, {"n": "IV", "titulo": "Poder Judicial, Juicios y Ejecución de Penas", "leyes": [[31, "Ley del Tribunal Supremo de Occasus", "Todos los conflictos de la ciudad serán juzgados en la corte; el desacato a sus audiencias se castiga con cárcel."], [32, "Ley del Cumplimiento de las Normas", "Es una obligación civil conocer este código; violarlo deliberadamente o alegar ignorancia resulta en trabajo forzado."], [33, "Ley de la Presunción de Inocencia", "Todo acusado es inocente hasta que se presenten pruebas; los documentos sellados del Archivo Municipal y los resultados de las investigaciones estatales tienen valor probatorio pleno ante el Tribunal. Falsificar evidencias para incriminar a otro se castiga con cárcel."], [34, "Ley de la Magistratura (El Staff)", "Los administradores imponen las sentencias; rebelarse contra una decisión del staff conlleva un castigo indeterminado."], [35, "Ley de la Denuncia Formal", "Presentar demandas falsas o frívolas ante el tribunal para hacer perder el tiempo a la corte se penaliza con trabajo forzado."], [36, "Ley del Intento de Fuga", "Intentar escapar de la zona de cárcel o negarse a realizar el trabajo forzado asignado eleva la condena a pena de muerte."], [37, "Ley de la Complicidad Criminal", "Ayudar a un delincuente a esconderse o a evadir sus impuestos dentro del pueblo se castiga con la cárcel."], [38, "Ley de la Alta Traición", "Conspirar para destruir la ciudad o sabotear técnicamente el servidor se castiga de forma irrevocable con la pena de muerte."], [39, "Ley del Desacato al Tribunal", "Interrumpir un juicio en curso o insultar a los magistrados conllevará el ingreso inmediato a la cárcel."], [40, "Ley del Incumplimiento de Condena", "Si el infractor se niega a someterse a la corte, el staff aplicará sobre él un castigo indeterminado."]]}, {"n": "V", "titulo": "Regulaciones Generales, Tecnológicas y Orden Global", "leyes": [[41, "Ley de la Pureza Visual", "El uso de texturas X-Ray, hacks de iluminación ajenos al modpack oficial de la ciudad, o el uso de páginas y herramientas externas para obtener ventaja indebida sobre otros ciudadanos (como localizar estructuras, recursos o jugadores sin haberlos descubierto dentro del propio juego), se penaliza con un castigo indeterminado. El modpack oficial vigente es el recogido en el Anexo I de este código; cualquier paquete no listado allí se considera no autorizado."], [42, "Ley del Equilibrio Técnico", "Explotar mecánicas bugeadas o hechizos rotos de los mods para saltarse las prisiones o las leyes resulta en pena de muerte."], [43, "Ley de la Automatización Sostenible", "Si una industria pesada o granja mágica genera lag al servidor y el dueño se niega a apagarla, irá a la cárcel."], [44, "Ley de la Seguridad Patrimonial Oculta", "Esconder cofres con riquezas o tecnología prohibida del servidor dentro del área urbana sin registrar su contenido se castiga con trabajo forzado."], [45, "Ley del Monopolio de Estructuras", "Apropiarse ilegalmente de la totalidad de las mazmorras naturales generadas por los mods se penaliza con trabajo forzado."], [46, "Ley de la Alquimia Prohibida", "La duplicación de objetos mediante fallos del modpack es un crimen económico supremo; se aplica un castigo indeterminado."], [47, "Ley de la Transparencia Territorial", "Todo ciudadano está obligado por ley a declarar ante el Estado las coordenadas exactas de su vivienda principal, búnkeres y posesiones de valor; el ocultamiento de propiedades se castiga con cárcel."], [48, "Ley de la Red de Portales", "Queda estrictamente prohibido alterar, apagar o bloquear los portales de transporte público o estatales de la ciudad; cualquier daño a la red de portales se castiga con trabajo forzado."], [49, "Ley del Secreto de Estado", "Revelar por el chat global las coordenadas de búnkeres estratégicos o puestos de avanzada urbanos de otros ciudadanos vivos se sanciona con cárcel. Esta protección se extiende a cualquier medio de descubrimiento a distancia (incluidas tecnologías de renderizado extendido): localizar instalaciones ajenas no declaradas por este medio y explotar o divulgar esa información sin autorización se juzga como espionaje bajo esta misma ley."], [50, "Ley del Desacato ante el Comité", "Desobedecer las directrices del consejo municipal o del staff durante los disturbios urbanos de juego se castigará con un castigo indeterminado."]]}, {"n": "VI", "titulo": "Registro Notarial, Subsidios e Investigación Estatal", "leyes": [[51, "Ley del Documento Sellado (Registro Notarial)", "Todo acto de relevancia legal (juicios y sentencias, tratos y contratos, compraventas, testamentos, declaraciones e intercambios de gran volumen) deberá quedar recogido en un libro firmado por sus partes. De todo documento firmado se hará obligatoriamente copia: el original se archiva en el Ayuntamiento y la copia queda en poder del interesado. Ningún trato sin registro tendrá validez ante el Tribunal Supremo de Occasus."], [52, "Ley del Subsidio Ciudadano", "Todo ciudadano censado tiene derecho a percibir del Banquero de la ciudad un subsidio estatal de $100, una única vez cada 24 horas del mundo real. Intentar cobrarlo de nuevo antes de plazo, o obtenerlo mediante engaño o cuentas ajenas, se penaliza con cárcel."], [53, "Ley de la Trazabilidad Estatal", "El Estado de Occasus dispone de los medios necesarios para investigar y reconstruir las acciones y desplazamientos de cualquier ciudadano cuando exista causa legal: denuncia formal, juicio en curso o investigación abierta por el Tribunal. Ningún ciudadano podrá alegar desconocimiento de esta capacidad, y obstruir o intentar burlar una investigación estatal se castiga con cárcel."]]}, {"n": "VII", "titulo": "Cronología del Progreso y Restricciones Temporales de Apertura", "leyes": [[54, "Ley del Bloqueo Dimensional del Nether", "Queda estrictamente prohibido el acceso, la exploración o el establecimiento de portales hacia la dimensión del Nether antes de cumplirse el Día 6 del servidor. La frontera dimensional permanecerá sellada por decreto hasta esa fecha, y su apertura será proclamada oficialmente por el Estado. El traspaso prematuro de esta frontera (ya sea mediante fallos técnicos, accesos ocultos o portales clandestinos) será considerado desacato al calendario estatal y se sancionará con un castigo indeterminado, además de la destrucción inmediata del portal infractor."], [55, "Ley de la Veda de Minerales Superiores", "La extracción, posesión, ocultamiento o comercio de diamantes, netherite y demás materiales de gama alta queda completamente suspendida hasta alcanzar el Día 3 del servidor. Todo material superior obtenido antes del levantamiento de la veda será requisado de inmediato y pasará a engrosar el Tesoro municipal, y el infractor será condenado a trabajo forzado. El Estado se reserva el derecho de investigar el origen y la fecha de obtención de cualquier mineral superior que circule por la ciudad."]]}, {"n": "VIII", "titulo": "Nuevas Mecánicas: Fauna, Combate y Objetos Especiales", "leyes": [[56, "Ley del Botín Funerario", "Cuando un ciudadano fallece y deja tras de sí una lápida con sus pertenencias, dicha lápida se considera legalmente equivalente al cuerpo del difunto a todos los efectos: saquearla antes de que el Tribunal revise las causas de la muerte, o antes de que el propio fallecido decida sobre su Renacer, se penaliza igual que la Ley del Cadáver Huérfano (art. 26). Si el fallecido tenía testamento firmado, el contenido de la lápida sigue las reglas de la Ley del Robo de Sucesión (art. 27)."], [57, "Ley de la Negligencia en Combate", "El barrido propio de las mecánicas de combate no exime de responsabilidad: golpear a un ciudadano ajeno al conflicto, o herir a alguien dentro del Santuario Urbano por un barrido no dirigido, se juzga con la misma severidad que un ataque deliberado (arts. 23 y 24). La excusa de \"fue sin querer por el barrido\" no exime de la pena."], [58, "Ley de las Monturas y Mascotas Civiles", "Toda montura domesticada (aves, corceles u otras criaturas domadas) y toda mascota vinculada a un ciudadano se considera propiedad viva a todos los efectos (arts. 2 y 8). Robar, herir de forma deliberada o liberar sin consentimiento la montura o mascota de otro ciudadano se castiga como robo de propiedad bajo la Ley de la Propiedad Viva."], [59, "Ley de la Cosecha Ajena", "Recolectar cultivos, huertos o granjas de un ciudadano sin su permiso, por cualquier medio (incluida la recolección rápida o cualquier método que evite la interacción normal de cosecha), constituye robo bajo la Ley de la Propiedad Viva (art. 2)."], [60, "Ley de la Precedencia del Renacer", "El protocolo oficial de resurrección del Estado (Renacer) es la única vía reconocida para regresar de la muerte permanente. Cualquier mecánica alternativa de reaparición, desbloqueo o reanimación ajena a este protocolo carece de validez legal, y su uso deliberado para sortear el pago o las condiciones oficiales del Renacer se considera Alquimia Prohibida (art. 46)."]]}, {"n": "IX", "titulo": "Disposición General de Cierre", "leyes": [[61, "Ley de Cierre de Vacíos (Cláusula General)", "Ninguna mecánica, mod, objeto o exploit no contemplado expresamente en este código exime a un ciudadano de responsabilidad si su uso causa perjuicio real a otro ciudadano, al Estado o a la integridad del servidor. El Tribunal juzgará estos casos por analogía con la ley existente que más se asemeje en espíritu y consecuencia. La ignorancia de una mecánica nueva introducida por un mod no es excusa válida ante el Tribunal. Todo ciudadano que detecte un vacío legal deberá notificarlo al Estado; hacerlo será recompensado con una compensación monetaria a determinar por la administración."]]}];
-
-  /* ---------- Dual Scramble: revuelve el texto en color de acento, luego se asienta en el color normal ---------- */
   function randomCharLike(ch){
     if (/[0-9]/.test(ch)) return "0123456789"[Math.floor(Math.random()*10)];
     if (/[a-zA-ZÀ-ÿ]/.test(ch)) {
@@ -362,157 +654,162 @@
     const texto = el.textContent;
     const chars = texto.split("");
     el.innerHTML = chars.map(c => `<span class="scr-ch">${c===" " ? " " : c.replace(/[&<>]/g, x=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[x]))}</span>`).join("");
+    el.classList.remove("pre-scramble");
     const spans = el.querySelectorAll(".scr-ch");
     const lockDelay = Math.min(26, 480 / Math.max(1, chars.length));
-    const baseCycles = 240;
+    const baseCycles = 220;
     const startTime = performance.now();
-    spans.forEach((span, i)=>{
-      if (/[a-zA-ZÀ-ÿ0-9]/.test(chars[i])) span.classList.add("scrambling");
-    });
+    spans.forEach((span,i)=>{ if (/[a-zA-ZÀ-ÿ0-9]/.test(chars[i])) span.style.color = "var(--accent)"; });
     function frame(now){
       let activo = false;
-      spans.forEach((span, i)=>{
+      spans.forEach((span,i)=>{
         const original = chars[i];
         if (!/[a-zA-ZÀ-ÿ0-9]/.test(original)) return;
         const elapsed = now - startTime - i*lockDelay;
         if (elapsed < 0){ activo = true; return; }
-        if (elapsed < baseCycles){
-          span.textContent = randomCharLike(original);
-          activo = true;
-        } else if (span.classList.contains("scrambling")){
-          span.textContent = original;
-          span.classList.remove("scrambling");
-        }
+        if (elapsed < baseCycles){ span.textContent = randomCharLike(original); activo = true; }
+        else if (span.style.color){ span.textContent = original; span.style.color = ""; }
       });
       if (activo) requestAnimationFrame(frame);
     }
     requestAnimationFrame(frame);
   }
-  scrambleReveal(document.querySelector(".top h1"));
 
-  const revealItems = document.querySelectorAll(".reveal");
-  const io = new IntersectionObserver((entries)=>{
-    entries.forEach(e=>{
-      if (e.isIntersecting){
-        e.target.classList.add("in");
-        e.target.querySelectorAll(".tile-name, .tile-badge, .tile-count").forEach(scrambleReveal);
-        io.unobserve(e.target);
-      }
-    });
-  }, { threshold: 0.08 });
-  revealItems.forEach(el=>io.observe(el));
+  function animateCounter(el, target, duration){
+    duration = duration || 900;
+    const t0 = performance.now();
+    function step(now){
+      const p = Math.min(1, (now - t0) / duration);
+      const eased = 1 - Math.pow(1-p, 3);
+      el.textContent = Math.round(target * eased);
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
 
-  document.querySelectorAll(".cat-tile").forEach(tile=>{
-    tile.addEventListener("pointermove", (e)=>{
-      const r = tile.getBoundingClientRect();
-      tile.style.setProperty("--mx", ((e.clientX-r.left)/r.width*100)+"%");
-      tile.style.setProperty("--my", ((e.clientY-r.top)/r.height*100)+"%");
-    });
-  });
-
-  const expanded = document.getElementById("cat-expanded");
-  const overlayBg = document.getElementById("overlay-bg");
-  const expBadge = document.getElementById("exp-badge");
-  const expTitle = document.getElementById("exp-title");
-  const expBody = document.getElementById("exp-body");
-  const expClose = document.getElementById("exp-close");
-  let originRect = null;
-
-  const DURACION = 620;
-  const CURVA = "cubic-bezier(.32, 1.4, .38, 1)";
+  function clickSpark(x, y){
+    const count = 8, size = 10, radius = 32, duration = 400;
+    for (let i=0;i<count;i++){
+      const linea = document.createElement("div");
+      linea.className = "spark-line";
+      const ang = (360/count)*i;
+      linea.style.left = x+"px"; linea.style.top = y+"px";
+      linea.style.width = size+"px"; linea.style.height = "2px";
+      linea.style.transform = `translate(-50%,-50%) rotate(${ang}deg)`;
+      linea.style.opacity = "1";
+      linea.style.transition = `transform ${duration}ms ease-out, opacity ${duration}ms ease-out`;
+      document.body.appendChild(linea);
+      requestAnimationFrame(()=>{
+        linea.style.transform = `translate(-50%,-50%) rotate(${ang}deg) translateX(${radius}px)`;
+        linea.style.opacity = "0";
+      });
+      setTimeout(()=>linea.remove(), duration+50);
+    }
+  }
+  document.addEventListener("pointerdown", (e)=> clickSpark(e.clientX, e.clientY));
 
   function escapeHtml(s){ const d=document.createElement("div"); d.textContent=s; return d.innerHTML; }
-
-  function pintarLeyes(leyes){
-    expBody.innerHTML = leyes.map(([num,titulo,texto])=>`
-      <div class="law-card" data-num="${num}">
+  function renderLeyesHtml(leyes){
+    return leyes.map(([num,titulo,texto])=>`
+      <div class="law-row" data-num="${num}" data-title="${escapeHtml(titulo.toLowerCase())}">
         <div class="law-num">${num}</div>
         <div class="law-body">
           <div class="law-title">${escapeHtml(titulo)}</div>
           <div class="law-text">${escapeHtml(texto)}</div>
         </div>
       </div>`).join("");
-    requestAnimationFrame(()=>{
-      expBody.querySelectorAll(".law-card").forEach((c,i)=>{
-        setTimeout(()=>{
-          c.classList.add("in");
-          scrambleReveal(c.querySelector(".law-num"));
-          scrambleReveal(c.querySelector(".law-title"));
-          scrambleReveal(c.querySelector(".law-text"));
-        }, i*32);
-      });
+  }
+  function animarEntradaLeyes(cont){
+    cont.querySelectorAll(".law-row").forEach((row,i)=>{
+      setTimeout(()=>{ row.classList.add("in"); scrambleReveal(row.querySelector(".law-title")); }, i*26);
     });
   }
 
-  function abrirCategoria(tile, idx){
-    expBody.scrollTop = 0;
-    expTop.classList.remove("dissolve-ready");
-    expTop.style.opacity = ""; expTop.style.filter = ""; expTop.style.transform = "";
-    const r = tile.getBoundingClientRect();
-    originRect = r;
-    const panel = PANELS[idx];
+  const detalleWrap = document.getElementById("detalle-wrap");
+  const detalleInner = document.getElementById("detalle-inner");
+  const detalleTitulo = document.getElementById("detalle-titulo");
+  const catGrid = document.getElementById("cat-grid");
 
-    expBadge.textContent = panel.n; delete expBadge.dataset.scrambled;
-    expTitle.textContent = panel.titulo; delete expTitle.dataset.scrambled;
-    requestAnimationFrame(()=>{ scrambleReveal(expBadge); scrambleReveal(expTitle); });
-    pintarLeyes(panel.leyes);
-    expanded.classList.remove("content-visible");
-
-    expanded.style.transition = "none";
-    expanded.style.display = "block";
-    expanded.style.top = r.top+"px"; expanded.style.left = r.left+"px";
-    expanded.style.width = r.width+"px"; expanded.style.height = r.height+"px";
-    expanded.style.borderRadius = "20px";
-    overlayBg.classList.add("show");
-    expanded.offsetHeight;
-
-    requestAnimationFrame(()=>{
-      const t = `top ${DURACION}ms ${CURVA}, left ${DURACION}ms ${CURVA}, width ${DURACION}ms ${CURVA}, height ${DURACION}ms ${CURVA}, border-radius ${DURACION}ms ${CURVA}`;
-      expanded.style.transition = t;
-      expanded.style.top = "0px"; expanded.style.left = "0px";
-      expanded.style.width = "100vw"; expanded.style.height = "100vh";
-      expanded.style.borderRadius = "0px";
-    });
-    // El contenido solo aparece cuando la caja ya está bastante abierta, no antes
-    setTimeout(()=> expanded.classList.add("content-visible"), DURACION * 0.5);
+  function abrirDetalle(idx){
+    const s = PANELS[idx];
+    infoWrap.classList.remove("open"); cerrarBolsa();
+    detalleTitulo.textContent = "Sección " + s.n + " — " + s.titulo;
+    detalleInner.innerHTML = renderLeyesHtml(s.leyes);
+    detalleWrap.classList.remove("cerrando");
+    detalleWrap.classList.add("open");
+    animarEntradaLeyes(detalleInner);
+    detalleWrap.scrollIntoView({behavior:"smooth", block:"nearest"});
   }
-
-  function cerrarCategoria(){
-    if (!originRect) return;
-    // Primero se desvanece el contenido, y solo entonces empieza a encoger la caja
-    expanded.classList.remove("content-visible");
-    setTimeout(()=>{
-      const t = `top ${DURACION}ms ${CURVA}, left ${DURACION}ms ${CURVA}, width ${DURACION}ms ${CURVA}, height ${DURACION}ms ${CURVA}, border-radius ${DURACION}ms ${CURVA}`;
-      expanded.style.transition = t;
-      expanded.style.top = originRect.top+"px"; expanded.style.left = originRect.left+"px";
-      expanded.style.width = originRect.width+"px"; expanded.style.height = originRect.height+"px";
-      expanded.style.borderRadius = "20px";
-      overlayBg.classList.remove("show");
-      setTimeout(()=>{ expanded.style.display = "none"; }, DURACION);
-    }, 160);
+  function cerrarDetalle(){
+    if (!detalleWrap.classList.contains("open")) return;
+    detalleWrap.classList.remove("open");
+    detalleWrap.classList.add("cerrando");
+    setTimeout(()=> detalleWrap.classList.remove("cerrando"), 300);
   }
-
-  document.querySelectorAll(".cat-tile").forEach(tile=>{
-    tile.addEventListener("click", ()=> abrirCategoria(tile, parseInt(tile.dataset.idx)));
+  catGrid.querySelectorAll(".cat-card").forEach(card=>{
+    card.addEventListener("click", ()=> abrirDetalle(Number(card.dataset.idx)));
   });
-  expClose.addEventListener("click", cerrarCategoria);
+  document.getElementById("detalle-close").addEventListener("click", cerrarDetalle);
 
-  /* ---------- Disuelve el título del panel al hacer scroll dentro de las leyes ---------- */
-  const expTop = document.querySelector(".exp-top");
-  const ALTURA_REF_INTERNA = 140;
-  expBody.addEventListener("scroll", ()=>{
-    expTop.classList.add("dissolve-ready");
-    const progreso = Math.min(1, Math.max(0, expBody.scrollTop / ALTURA_REF_INTERNA));
-    expTop.style.opacity = String(1 - progreso);
-    expTop.style.filter = `blur(${progreso*8}px)`;
-    expTop.style.transform = `scale(${1 - progreso*0.08}) translateY(${progreso*-14}px)`;
-  }, { passive:true });
-  overlayBg.addEventListener("click", cerrarCategoria);
+  /* ---------- Mega Menu del header (multi-columna, hover-intent) ---------- */
+  const megaTrigger = document.getElementById("mega-trigger");
+  const megaDropdown = document.getElementById("mega-dropdown");
+  const megaDropdownInner = document.getElementById("mega-dropdown-inner");
+  let megaAbrirTimeout = null, megaCerrarTimeout = null;
+
+  const COLUMNAS_MEGA = [
+    { titulo: "Civil y Estado", indices: [0,5,8] },
+    { titulo: "Economía y Técnica", indices: [1,4,6] },
+    { titulo: "Justicia y Combate", indices: [2,3,7] },
+  ];
+  COLUMNAS_MEGA.forEach(col=>{
+    const columna = document.createElement("div");
+    columna.className = "mega-col";
+    const label = document.createElement("div");
+    label.className = "mega-col-label";
+    label.textContent = col.titulo;
+    columna.appendChild(label);
+    col.indices.forEach(idx=>{
+      const s = PANELS[idx];
+      const item = document.createElement("a");
+      item.className = "mega-item";
+      item.innerHTML = `${escapeHtml(s.titulo)}<span class="n">${s.n}</span>`;
+      item.addEventListener("click", ()=>{ cerrarMegaHeader(); abrirDetalle(idx); });
+      columna.appendChild(item);
+    });
+    megaDropdownInner.appendChild(columna);
+  });
+
+  function abrirMegaHeader(){
+    megaDropdown.classList.add("open");
+    megaTrigger.classList.add("active");
+    megaDropdownInner.querySelectorAll(".mega-col").forEach(c=>{
+      c.classList.remove("mega-slide-r"); void c.offsetWidth; c.classList.add("mega-slide-r");
+    });
+  }
+  function cerrarMegaHeader(){ megaDropdown.classList.remove("open"); megaTrigger.classList.remove("active"); }
+  function cancelarCierre(){ clearTimeout(megaCerrarTimeout); }
+  function programarCierre(){ megaCerrarTimeout = setTimeout(cerrarMegaHeader, 240); }
+
+  [megaTrigger, megaDropdown].forEach(el=>{
+    el.addEventListener("mouseenter", ()=>{
+      cancelarCierre();
+      megaAbrirTimeout = setTimeout(abrirMegaHeader, 90);
+    });
+    el.addEventListener("mouseleave", ()=>{
+      clearTimeout(megaAbrirTimeout);
+      programarCierre();
+    });
+  });
+  megaTrigger.addEventListener("click", (e)=>{
+    e.preventDefault();
+    if (megaDropdown.classList.contains("open")) cerrarMegaHeader();
+    else abrirMegaHeader();
+  });
 
   const search = document.getElementById("search");
   const searchWrap = document.getElementById("search-wrap");
   const overlay = document.getElementById("search-overlay");
-  const grid = document.getElementById("categories-grid");
   const results = document.getElementById("search-results");
   const noResults = document.getElementById("no-results");
 
@@ -530,37 +827,309 @@
     }
     prevLength = value.length;
   }
-
   function buscar(){
     const q = search.value.trim().toLowerCase();
-    if (!q){
-      grid.style.display = "grid"; results.classList.remove("show"); noResults.style.display = "none";
-      return;
-    }
-    grid.style.display = "none"; results.classList.add("show");
+    const hay = q.length > 0;
+    catGrid.style.display = hay ? "none" : "grid";
+    detalleWrap.style.display = hay ? "none" : "";
+    if (!hay){ results.classList.remove("show"); noResults.style.display="none"; return; }
+    results.classList.add("show");
     const esNumero = /^\d+$/.test(q);
     let encontrados = [];
-    PANELS.forEach(panel=>{
-      panel.leyes.forEach(([num,titulo,texto])=>{
-        const match = esNumero ? String(num)===q : titulo.toLowerCase().includes(q);
-        if (match) encontrados.push({num,titulo,texto});
-      });
-    });
-    if (!encontrados.length){
-      results.innerHTML = ""; noResults.style.display = "block"; return;
-    }
+    PANELS.forEach(p=> p.leyes.forEach(([num,titulo,texto])=>{
+      const match = esNumero ? String(num)===q : titulo.toLowerCase().includes(q);
+      if (match) encontrados.push([num,titulo,texto]);
+    }));
+    if (!encontrados.length){ results.innerHTML=""; noResults.style.display="block"; return; }
     noResults.style.display = "none";
-    results.innerHTML = encontrados.map(l => `
-      <div class="law-card in">
-        <div class="law-num">${l.num}</div>
-        <div class="law-body">
-          <div class="law-title">${escapeHtml(l.titulo)}</div>
-          <div class="law-text">${escapeHtml(l.texto)}</div>
-        </div>
-      </div>`).join("");
+    results.innerHTML = renderLeyesHtml(encontrados);
+    animarEntradaLeyes(results);
+  }
+  search.addEventListener("input", ()=>{ renderOverlay(search.value); buscar(); });
+
+  document.getElementById("nav-inicio").addEventListener("click", ()=>{
+    search.value=""; buscar(); cerrarDetalle(); infoWrap.classList.remove("open"); bolsaWrap.classList.remove("open");
+    window.scrollTo({top:0, behavior:"smooth"});
+  });
+
+  /* ---------- Anexo y Estado: panel de información funcional ---------- */
+  const infoWrap = document.getElementById("info-wrap");
+  const infoTitulo = document.getElementById("info-titulo");
+  const infoInner = document.getElementById("info-inner");
+
+  const MODS_OFICIALES = [
+    "Occasus — Estado Completo", "Occasus — Recursos (Ordenador)", "Real Money USD",
+    "A&S Compatibility 1.1 / Actions & Stuff 1.11", "Java Combat v2.6.5",
+    "Spidi's Right Click Harvest 2.1.0", "Hardcore Unlocked", "Complemento Lápida",
+    "Aether Moa Add-On", "Spark Pets (Lite) Add-On", "Caos al Cubo: Cubos Malditos",
+    "Cave Biomes Add-On", "Immersive Rain + Snow v1.5", "Distant Horizons LOD (BETA)",
+    "Better Trees by Daniye v1.4.3", "Connected Glass", "Naturalist 3.1 Add-On",
+    "Furniture Builder Add-On 2.0", "Java Saturation v1.4.7", "Aesthetic Sounds v1.2",
+    "Realistic Biomes Add-On"
+  ];
+
+  const totalLeyesN = PANELS.reduce((a,s)=>a+s.leyes.length,0);
+
+  /* ---------- Ticker: noticias en bucle continuo ---------- */
+  (function llenarTicker(){
+    const ultima = PANELS.flatMap(s=>s.leyes).find(l => l[0] === 49);
+    const mensajes = [
+      "ART. " + ultima[0] + " — " + ultima[1].toUpperCase() + " ES LEY",
+      "RESPETA LAS LEYES: TU VIDA CORRE MÁS PELIGRO SI TE POSICIONAS EN CONTRA DEL ESTADO DE OCCASUS",
+      totalLeyesN + " ARTÍCULOS VIGENTES EN " + PANELS.length + " SECCIONES",
+      "¿ENCONTRASTE UN VACÍO? SE COMPENSA ECONÓMICAMENTE (ART. 62)",
+    ];
+    const track = document.getElementById("ticker-track");
+    function bloque(){
+      return mensajes.map(m => `<span>${escapeHtml(m)}</span><span class="dot">·</span>`).join("");
+    }
+    track.innerHTML = bloque() + bloque();
+  })();
+
+  function mostrarAnexo(){
+    cerrarDetalle(); cerrarBolsa();
+    infoTitulo.textContent = "Anexo I — Modpack Oficial Reconocido";
+    infoInner.innerHTML = `
+      <p class="info-desc">Lista de referencia para la Ley de la Pureza Visual (art. 41). Todo paquete de recursos o comportamiento no incluido aquí se considera no autorizado dentro de Occasus.</p>
+      <div class="mods-grid">${MODS_OFICIALES.map(m=>`<div class="mod-chip">${escapeHtml(m)}</div>`).join("")}</div>
+      <p class="info-nota"><b>Nota de vigencia:</b> este anexo se actualiza cada vez que el Estado incorpora o retira un mod oficial. La versión vigente es siempre la última publicada por la administración del servidor.</p>`;
+    infoWrap.classList.add("open");
+    infoWrap.scrollIntoView({behavior:"smooth", block:"nearest"});
   }
 
-  search.addEventListener("input", ()=>{ renderOverlay(search.value); buscar(); });
+  function mostrarEstado(){
+    cerrarDetalle(); cerrarBolsa();
+    infoTitulo.textContent = "El Estado de Occasus";
+    infoInner.innerHTML = `
+      <div class="estado-grid">
+        <div class="estado-item"><span class="l">Presidente</span><span class="v">Por determinar en las próximas elecciones</span></div>
+        <div class="estado-item"><span class="l">Moneda oficial</span><span class="v">Real Money USD ($)</span></div>
+        <div class="estado-item"><span class="l">Constitución vigente</span><span class="v">${totalLeyesN} artículos · ${PANELS.length} secciones</span></div>
+        <div class="estado-item"><span class="l">Frontera del Nether</span><span class="v">Sellada hasta el Día 6 (art. 54)</span></div>
+        <div class="estado-item"><span class="l">Veda de minerales superiores</span><span class="v">Hasta el Día 3 (art. 55)</span></div>
+        <div class="estado-item"><span class="l">Tribunal Supremo</span><span class="v">Activo — juzga todo conflicto (art. 31)</span></div>
+      </div>
+      <p class="info-nota">Esta página se actualizará según avance el Estado — nuevos cargos, fechas y decretos se irán añadiendo aquí.</p>`;
+    infoWrap.classList.add("open");
+    infoWrap.scrollIntoView({behavior:"smooth", block:"nearest"});
+  }
+
+  document.getElementById("nav-anexo").addEventListener("click", mostrarAnexo);
+  document.getElementById("nav-estado").addEventListener("click", (e)=>{ e.preventDefault(); mostrarEstado(); });
+  document.getElementById("mobile-anexo").addEventListener("click", mostrarAnexo);
+  document.getElementById("mobile-estado").addEventListener("click", mostrarEstado);
+  document.getElementById("info-close").addEventListener("click", ()=> infoWrap.classList.remove("open"));
+
+  /* ---------- La Bolsa: nueva sección ---------- */
+  const bolsaWrap = document.getElementById("bolsa-wrap");
+  const EMPRESAS_EJEMPLO = [
+    { id:"ORO",  n:"ORO DE OCCASUS", p:118, u:76400, vol:0.8 },
+    { id:"CACT", n:"C ACTIONS",      p:57,  u:19100, vol:2.2 },
+    { id:"OCC",  n:"OCCASUS S.A.",   p:214, u:39200, vol:1.0 },
+    { id:"REC",  n:"LA RECAUDADORA", p:74,  u:29500, vol:1.4 },
+    { id:"BCO",  n:"BANCO CENTRAL",  p:162, u:58800, vol:0.5 },
+  ];
+  function generarHistorico(precioFinal, vol, n){
+    const pasos = [];
+    let precio = precioFinal * (1 - (Math.random()*0.15+0.05));
+    for (let i=0;i<n;i++){
+      precio = Math.max(precioFinal*0.4, precio * (1 + (Math.random()-0.48) * 0.05 * vol));
+      pasos.push(Math.round(precio));
+    }
+    pasos[pasos.length-1] = precioFinal;
+    return pasos;
+  }
+  let bolsaInicializada = false;
+  let activaBolsa = 0;
+  let puntosPxBolsa = [];
+  let escalaBolsa = 1;
+
+  function pintarLateralBolsa(){
+    const cont = document.getElementById("bolsa-side-cards");
+    cont.innerHTML = "";
+    EMPRESAS_EJEMPLO.forEach((e, idx)=>{
+      const cambio = Math.round((e.h[e.h.length-1] - e.h[0]) / e.h[0] * 100);
+      const positivo = cambio >= 0;
+      const div = document.createElement("div");
+      div.className = "side-card" + (idx===activaBolsa ? " active" : "");
+      div.innerHTML = `
+        <div class="top"><span class="tag">${e.id}</span></div>
+        <div class="name">${escapeHtml(e.n)}</div>
+        <div class="price-row">
+          <div class="price">${e.p.toLocaleString("es-ES")}$</div>
+          <div class="chg ${positivo?'up':'down'}">${positivo?'+':''}${cambio}%</div>
+        </div>`;
+      div.addEventListener("click", ()=>{ activaBolsa = idx; pintarLateralBolsa(); pintarTabsBolsa(); pintarGraficaBolsa(); });
+      cont.appendChild(div);
+    });
+  }
+  function pintarTabsBolsa(){
+    const cont = document.getElementById("bolsa-titulo-activa");
+    const e = EMPRESAS_EJEMPLO[activaBolsa];
+    cont.innerHTML = `<span class="id">${e.id}</span>${escapeHtml(e.n)}`;
+  }
+  function pintarGraficaBolsa(){
+    const e = EMPRESAS_EJEMPLO[activaBolsa];
+    const canvas = document.getElementById("bolsa-chart-canvas");
+    const ctx = canvas.getContext("2d");
+    const rect = canvas.parentElement.getBoundingClientRect();
+    canvas.width = rect.width; canvas.height = rect.height;
+    const W = canvas.width, H = canvas.height, pad = 18;
+    const datos = e.h;
+    const min = Math.min(...datos), max = Math.max(...datos);
+    const rango = ((max - min) || 1) / escalaBolsa;
+    const centro = (max+min)/2;
+    const minV = centro - rango/2, maxV = centro + rango/2;
+    puntosPxBolsa = datos.map((v,i)=>({
+      x: pad + (i/(datos.length-1)) * (W-pad*2),
+      y: pad + (1 - (v-minV)/(maxV-minV || 1)) * (H-pad*2),
+      v
+    }));
+    ctx.clearRect(0,0,W,H);
+    const grad = ctx.createLinearGradient(0,0,0,H);
+    grad.addColorStop(0, "rgba(255,90,46,.22)"); grad.addColorStop(1, "rgba(255,90,46,0)");
+    ctx.beginPath(); ctx.moveTo(puntosPxBolsa[0].x, H-pad);
+    puntosPxBolsa.forEach(p=> ctx.lineTo(p.x, p.y));
+    ctx.lineTo(puntosPxBolsa[puntosPxBolsa.length-1].x, H-pad);
+    ctx.closePath(); ctx.fillStyle = grad; ctx.fill();
+    ctx.beginPath();
+    puntosPxBolsa.forEach((p,i)=> i===0 ? ctx.moveTo(p.x,p.y) : ctx.lineTo(p.x,p.y));
+    ctx.strokeStyle = "#FF5A2E"; ctx.lineWidth = 2.2; ctx.lineJoin="round"; ctx.stroke();
+    const labels = document.getElementById("bolsa-chart-labels");
+    labels.innerHTML = "";
+    for (let i=0;i<=6;i++){
+      const idx = Math.round(i/6*(datos.length-1));
+      const span = document.createElement("span"); span.textContent = "Día " + (idx+1);
+      labels.appendChild(span);
+    }
+  }
+  function inicializarBolsa(){
+    if (bolsaInicializada) return;
+    bolsaInicializada = true;
+    EMPRESAS_EJEMPLO.forEach(e=> e.h = generarHistorico(e.p, e.vol, 30));
+
+    const canvas = document.getElementById("bolsa-chart-canvas");
+    const tooltip = document.getElementById("bolsa-tooltip-card");
+    const chartDot = document.getElementById("bolsa-chart-dot");
+    canvas.addEventListener("mousemove", (ev)=>{
+      if (!puntosPxBolsa.length) return;
+      const rect = canvas.getBoundingClientRect();
+      const mx = ev.clientX - rect.left;
+      let cercano = puntosPxBolsa[0], distMin = Infinity;
+      puntosPxBolsa.forEach(p=>{ const d = Math.abs(p.x-mx); if (d<distMin){ distMin=d; cercano=p; } });
+      const emp = EMPRESAS_EJEMPLO[activaBolsa];
+      document.getElementById("bolsa-tt-date").textContent = "Día " + (puntosPxBolsa.indexOf(cercano)+1);
+      document.getElementById("bolsa-tt-price").textContent = cercano.v.toLocaleString("es-ES") + "$";
+      document.getElementById("bolsa-tt-units").textContent = emp.u.toLocaleString("es-ES") + " ud";
+      chartDot.style.left = cercano.x + "px";
+      chartDot.style.top = cercano.y + "px";
+      chartDot.classList.add("show");
+      const arribaDelPunto = cercano.y > 110;
+      tooltip.style.left = Math.min(rect.width-150, Math.max(0, cercano.x-70)) + "px";
+      tooltip.style.top = (arribaDelPunto ? cercano.y-108 : cercano.y+18) + "px";
+      tooltip.classList.add("show");
+    });
+    canvas.addEventListener("mouseleave", ()=>{ tooltip.classList.remove("show"); chartDot.classList.remove("show"); });
+    document.getElementById("bolsa-zoom-in").addEventListener("click", ()=>{ escalaBolsa = Math.min(3, escalaBolsa*1.3); pintarGraficaBolsa(); });
+    document.getElementById("bolsa-zoom-out").addEventListener("click", ()=>{ escalaBolsa = Math.max(0.4, escalaBolsa/1.3); pintarGraficaBolsa(); });
+
+    const capTotal = EMPRESAS_EJEMPLO.reduce((a,e)=> a + e.p*e.u, 0);
+    animateCounter(document.getElementById("bolsa-stat-cap"), capTotal, 1000);
+    const volMedia = EMPRESAS_EJEMPLO.reduce((a,e)=>a+e.vol,0)/EMPRESAS_EJEMPLO.length;
+    const volPct = Math.min(100, (volMedia-0.5)/(2.5-0.5)*100);
+    document.getElementById("bolsa-vol-fill").style.width = volPct+"%";
+    document.getElementById("bolsa-vol-dot").style.left = volPct+"%";
+    const unitsTotal = EMPRESAS_EJEMPLO.reduce((a,e)=>a+e.u,0);
+    const unitsPct = Math.min(100, unitsTotal/250000*100);
+    document.getElementById("bolsa-units-fill").style.width = unitsPct+"%";
+    document.getElementById("bolsa-units-dot").style.left = unitsPct+"%";
+    document.getElementById("bolsa-btn-comprar").addEventListener("click", ()=>{
+      alert("Para comprar acciones ahora mismo: entra en el juego, abre el Banco de Occasus → La Bolsa, y compra ahí directamente. La compra desde esta web en vivo es el siguiente paso del proyecto (con Firebase).");
+    });
+    window.addEventListener("resize", ()=>{ if (bolsaWrap.classList.contains("open")) pintarGraficaBolsa(); });
+    pintarLateralBolsa(); pintarTabsBolsa(); pintarGraficaBolsa();
+  }
+  function mostrarBolsa(){
+    cerrarDetalle(); infoWrap.classList.remove("open");
+    bolsaWrap.classList.remove("cerrando");
+    bolsaWrap.classList.add("open");
+    inicializarBolsa();
+    setTimeout(pintarGraficaBolsa, 60);
+    bolsaWrap.scrollIntoView({behavior:"smooth", block:"nearest"});
+  }
+  function cerrarBolsa(){
+    if (!bolsaWrap.classList.contains("open")) return;
+    bolsaWrap.classList.remove("open");
+    bolsaWrap.classList.add("cerrando");
+    setTimeout(()=> bolsaWrap.classList.remove("cerrando"), 300);
+  }
+  document.getElementById("nav-bolsa").addEventListener("click", mostrarBolsa);
+  document.getElementById("mobile-bolsa").addEventListener("click", mostrarBolsa);
+  document.getElementById("bolsa-close").addEventListener("click", cerrarBolsa);
+
+
+  const totalLeyes = totalLeyesN;
+  animateCounter(document.getElementById("stat-leyes"), totalLeyes);
+  animateCounter(document.getElementById("stat-secciones"), PANELS.length);
+  document.querySelectorAll(".cat-name, .cat-tag, .destacada-main h3, .tag-chip, nav a, .filtro-tab").forEach((el,i)=>{
+    setTimeout(()=> scrambleReveal(el), i*22);
+  });
+  const heroH1 = document.querySelector(".hero h1");
+  heroH1.style.opacity = "0"; heroH1.style.transform = "translateY(14px)";
+  heroH1.style.transition = "opacity .6s var(--smooth), transform .6s var(--smooth)";
+  requestAnimationFrame(()=> requestAnimationFrame(()=>{ heroH1.style.opacity="1"; heroH1.style.transform="translateY(0)"; }));
+
+  setTimeout(()=>{
+    document.querySelectorAll(".pre-scramble").forEach(el=> el.classList.remove("pre-scramble"));
+  }, 2500);
+
+  /* ---------- Modal "Reportar vacío" con efecto Pixel Card al aparecer ---------- */
+  const reportBackdrop = document.getElementById("report-backdrop");
+  const reportCard = document.getElementById("report-card-inner");
+  const pixelCanvas = document.getElementById("pixel-canvas");
+
+  function animarPixelCard(){
+    const ctx = pixelCanvas.getContext("2d");
+    const rect = reportCard.getBoundingClientRect();
+    pixelCanvas.width = rect.width; pixelCanvas.height = rect.height;
+    const gap = 7, size = 5;
+    const cols = Math.ceil(pixelCanvas.width / gap), rows = Math.ceil(pixelCanvas.height / gap);
+    const colores = ["#FF5A2E", "#FFC7AE", "#17171A", "#DCDCD8"];
+    const celdas = [];
+    for (let x=0; x<cols; x++){
+      for (let y=0; y<rows; y++){
+        celdas.push({ x:x*gap, y:y*gap, delay:Math.random()*380, color: colores[Math.floor(Math.random()*colores.length)] });
+      }
+    }
+    const inicio = performance.now();
+    function frame(now){
+      const t = now - inicio;
+      ctx.clearRect(0,0,pixelCanvas.width,pixelCanvas.height);
+      let activos = false;
+      celdas.forEach(c=>{
+        const local = t - c.delay;
+        if (local < 0){ activos = true; return; }
+        const prog = Math.min(1, local/220);
+        if (prog < 1) activos = true;
+        const alpha = prog < 0.5 ? prog*2 : (1-prog)*2;
+        if (alpha > 0.01){ ctx.globalAlpha = alpha; ctx.fillStyle = c.color; ctx.fillRect(c.x, c.y, size, size); }
+      });
+      ctx.globalAlpha = 1;
+      if (activos) requestAnimationFrame(frame);
+      else ctx.clearRect(0,0,pixelCanvas.width,pixelCanvas.height);
+    }
+    requestAnimationFrame(frame);
+  }
+
+  function abrirReporte(){
+    reportBackdrop.classList.add("show");
+    requestAnimationFrame(()=> animarPixelCard());
+  }
+  function cerrarReporte(){ reportBackdrop.classList.remove("show"); }
+
+  document.querySelectorAll(".btn-reportar").forEach(btn=> btn.addEventListener("click", abrirReporte));
+  document.getElementById("report-close").addEventListener("click", cerrarReporte);
+  reportBackdrop.addEventListener("click", (e)=>{ if (e.target === reportBackdrop) cerrarReporte(); });
 })();
 </script>
 </body>
