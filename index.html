@@ -201,6 +201,10 @@
   #bolsa-wrap.open{ display:block; animation:detalleAbrir .5s var(--bounce); }
   #bolsa-wrap.cerrando{ display:block; animation:detalleCerrar .28s var(--smooth) forwards; }
   .bolsa-sub{ font-size:12.5px; color:var(--muted); line-height:1.6; margin:4px 32px 0; max-width:520px; }
+  .bolsa-live-badge{ display:flex; align-items:center; gap:6px; font-family:var(--font-mono); font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); border:1.5px solid var(--line); border-radius:16px; padding:5px 11px; margin-right:auto; margin-left:14px; }
+  .bolsa-live-badge .p{ width:6px; height:6px; border-radius:50%; background:#E8B23A; }
+  .bolsa-live-badge.ok .p{ background:#1E8E5A; }
+  .bolsa-cargando{ padding:24px 20px; text-align:center; color:var(--muted); font-size:12.5px; }
   .bolsa-stats-row{ display:grid; grid-template-columns:repeat(3,1fr); border-top:1.5px solid var(--line); border-bottom:1.5px solid var(--line); margin-top:18px; }
   .bolsa-stats-row > div{ padding:18px 26px; border-right:1.5px solid var(--line); }
   .bolsa-stats-row > div:last-child{ border-right:none; }
@@ -361,6 +365,8 @@
     html{ scroll-behavior:auto; } *{ transition:none !important; animation:none !important; }
   }
 </style>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
 <canvas id="dither-bg"></canvas>
@@ -521,7 +527,11 @@
   </div>
 
   <div id="bolsa-wrap">
-    <div class="detalle-head"><h3>La Bolsa de Occasus</h3><button class="detalle-close" id="bolsa-close">✕</button></div>
+    <div class="detalle-head">
+      <h3>La Bolsa de Occasus</h3>
+      <span class="bolsa-live-badge" id="bolsa-live-badge"><span class="p"></span><span id="bolsa-live-text">Conectando...</span></span>
+      <button class="detalle-close" id="bolsa-close">✕</button>
+    </div>
     <p class="bolsa-sub">Las 5 empresas fundacionales del Estado, su precio y su historial — misma información que verás en el Banco dentro del juego.</p>
 
     <div class="bolsa-stats-row">
@@ -562,8 +572,8 @@
 
     <div class="bolsa-bottom-cards">
       <div class="bottom-card">
-        <div><div class="t">¿Cómo compro de verdad?</div><div class="s">La compra se hace dentro del juego, en el Banco</div></div>
-        <button id="bolsa-btn-comprar">Ver cómo</button>
+        <div><div class="t">Comprar acciones</div><div class="s">Se refleja en tu cuenta del juego en unos segundos</div></div>
+        <button id="bolsa-btn-comprar">Comprar</button>
       </div>
       <div class="bottom-card discord">
         <div><div class="t">Habla con el Estado</div><div class="s">Dudas, sugerencias o negociar como fundador</div></div>
@@ -920,38 +930,68 @@ const PANELS = [{"n": "I", "titulo": "Orden Civil, Urbanismo y Burocracia Real",
   document.getElementById("mobile-estado").addEventListener("click", mostrarEstado);
   document.getElementById("info-close").addEventListener("click", ()=> infoWrap.classList.remove("open"));
 
-  /* ---------- La Bolsa: nueva sección ---------- */
+  /* ---------- La Bolsa: conexión real a Firebase ---------- */
   const bolsaWrap = document.getElementById("bolsa-wrap");
-  const EMPRESAS_EJEMPLO = [
-    { id:"ORO",  n:"ORO DE OCCASUS", p:118, u:76400, vol:0.8 },
-    { id:"CACT", n:"C ACTIONS",      p:57,  u:19100, vol:2.2 },
-    { id:"OCC",  n:"OCCASUS S.A.",   p:214, u:39200, vol:1.0 },
-    { id:"REC",  n:"LA RECAUDADORA", p:74,  u:29500, vol:1.4 },
-    { id:"BCO",  n:"BANCO CENTRAL",  p:162, u:58800, vol:0.5 },
-  ];
-  function generarHistorico(precioFinal, vol, n){
-    const pasos = [];
-    let precio = precioFinal * (1 - (Math.random()*0.15+0.05));
-    for (let i=0;i<n;i++){
-      precio = Math.max(precioFinal*0.4, precio * (1 + (Math.random()-0.48) * 0.05 * vol));
-      pasos.push(Math.round(precio));
+  const firebaseConfig = {
+    apiKey: "AIzaSyDfyLMGijXOHTbLkoryrXA4E4rpyQ54U_0",
+    authDomain: "occasus-bolsa.firebaseapp.com",
+    projectId: "occasus-bolsa",
+    storageBucket: "occasus-bolsa.firebasestorage.app",
+    messagingSenderId: "168415013629",
+    appId: "1:168415013629:web:7daeeb3e6a92c3bc29ec94",
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+  let EMPRESAS_EJEMPLO = [];
+  let bolsaDatosListos = false;
+
+  db.collection("empresas").onSnapshot((snap)=>{
+    const lista = [];
+    snap.forEach(docu=>{
+      const d = docu.data();
+      if (d.activa === false) return; // quebrada, ya no se muestra
+      if (typeof d.p !== "number" || typeof d.u !== "number" || !d.n) return; // documento incompleto, se ignora
+      lista.push({ id: docu.id, n: d.n, p: d.p, u: d.u, h: (d.h && d.h.length) ? d.h : [d.p] });
+    });
+    lista.sort((a,b)=> (a.n||"").localeCompare(b.n||""));
+    EMPRESAS_EJEMPLO = lista;
+    bolsaDatosListos = true;
+    const badge = document.getElementById("bolsa-live-badge");
+    const texto = document.getElementById("bolsa-live-text");
+    if (badge) badge.classList.add("ok");
+    if (texto) texto.textContent = EMPRESAS_EJEMPLO.length + " empresas en vivo";
+    if (bolsaWrap.classList.contains("open")){
+      pintarLateralBolsa(); pintarTabsBolsa(); pintarGraficaBolsa();
     }
-    pasos[pasos.length-1] = precioFinal;
-    return pasos;
-  }
+  }, (err)=>{
+    console.error("Firestore:", err);
+    const texto = document.getElementById("bolsa-live-text");
+    if (texto) texto.textContent = "Sin conexión";
+  });
+
   let bolsaInicializada = false;
-  let activaBolsa = 0;
+  let activaBolsaId = null;
   let puntosPxBolsa = [];
   let escalaBolsa = 1;
 
+  function obtenerActiva(){
+    if (!EMPRESAS_EJEMPLO.length) return null;
+    const encontrada = EMPRESAS_EJEMPLO.find(e=>e.id===activaBolsaId);
+    if (encontrada) return encontrada;
+    activaBolsaId = EMPRESAS_EJEMPLO[0].id; // la anterior ya no existe (quebró) o aún no había ninguna
+    return EMPRESAS_EJEMPLO[0];
+  }
+
   function pintarLateralBolsa(){
     const cont = document.getElementById("bolsa-side-cards");
+    if (!EMPRESAS_EJEMPLO.length){ cont.innerHTML = `<div class="bolsa-cargando">Conectando con el Estado...</div>`; return; }
+    const activa = obtenerActiva();
     cont.innerHTML = "";
-    EMPRESAS_EJEMPLO.forEach((e, idx)=>{
+    EMPRESAS_EJEMPLO.forEach((e)=>{
       const cambio = Math.round((e.h[e.h.length-1] - e.h[0]) / e.h[0] * 100);
       const positivo = cambio >= 0;
       const div = document.createElement("div");
-      div.className = "side-card" + (idx===activaBolsa ? " active" : "");
+      div.className = "side-card" + (e.id===activa.id ? " active" : "");
       div.innerHTML = `
         <div class="top"><span class="tag">${e.id}</span></div>
         <div class="name">${escapeHtml(e.n)}</div>
@@ -959,17 +999,19 @@ const PANELS = [{"n": "I", "titulo": "Orden Civil, Urbanismo y Burocracia Real",
           <div class="price">${e.p.toLocaleString("es-ES")}$</div>
           <div class="chg ${positivo?'up':'down'}">${positivo?'+':''}${cambio}%</div>
         </div>`;
-      div.addEventListener("click", ()=>{ activaBolsa = idx; pintarLateralBolsa(); pintarTabsBolsa(); pintarGraficaBolsa(); });
+      div.addEventListener("click", ()=>{ activaBolsaId = e.id; pintarLateralBolsa(); pintarTabsBolsa(); pintarGraficaBolsa(); });
       cont.appendChild(div);
     });
   }
   function pintarTabsBolsa(){
     const cont = document.getElementById("bolsa-titulo-activa");
-    const e = EMPRESAS_EJEMPLO[activaBolsa];
+    const e = obtenerActiva();
+    if (!e){ cont.innerHTML = ""; return; }
     cont.innerHTML = `<span class="id">${e.id}</span>${escapeHtml(e.n)}`;
   }
   function pintarGraficaBolsa(){
-    const e = EMPRESAS_EJEMPLO[activaBolsa];
+    const e = obtenerActiva();
+    if (!e) return;
     const canvas = document.getElementById("bolsa-chart-canvas");
     const ctx = canvas.getContext("2d");
     const rect = canvas.parentElement.getBoundingClientRect();
@@ -1006,7 +1048,6 @@ const PANELS = [{"n": "I", "titulo": "Orden Civil, Urbanismo y Burocracia Real",
   function inicializarBolsa(){
     if (bolsaInicializada) return;
     bolsaInicializada = true;
-    EMPRESAS_EJEMPLO.forEach(e=> e.h = generarHistorico(e.p, e.vol, 30));
 
     const canvas = document.getElementById("bolsa-chart-canvas");
     const tooltip = document.getElementById("bolsa-tooltip-card");
@@ -1017,7 +1058,7 @@ const PANELS = [{"n": "I", "titulo": "Orden Civil, Urbanismo y Burocracia Real",
       const mx = ev.clientX - rect.left;
       let cercano = puntosPxBolsa[0], distMin = Infinity;
       puntosPxBolsa.forEach(p=>{ const d = Math.abs(p.x-mx); if (d<distMin){ distMin=d; cercano=p; } });
-      const emp = EMPRESAS_EJEMPLO[activaBolsa];
+      const emp = obtenerActiva();
       document.getElementById("bolsa-tt-date").textContent = "Día " + (puntosPxBolsa.indexOf(cercano)+1);
       document.getElementById("bolsa-tt-price").textContent = cercano.v.toLocaleString("es-ES") + "$";
       document.getElementById("bolsa-tt-units").textContent = emp.u.toLocaleString("es-ES") + " ud";
@@ -1044,7 +1085,25 @@ const PANELS = [{"n": "I", "titulo": "Orden Civil, Urbanismo y Burocracia Real",
     document.getElementById("bolsa-units-fill").style.width = unitsPct+"%";
     document.getElementById("bolsa-units-dot").style.left = unitsPct+"%";
     document.getElementById("bolsa-btn-comprar").addEventListener("click", ()=>{
-      alert("Para comprar acciones ahora mismo: entra en el juego, abre el Banco de Occasus → La Bolsa, y compra ahí directamente. La compra desde esta web en vivo es el siguiente paso del proyecto (con Firebase).");
+      if (!EMPRESAS_EJEMPLO.length){ alert("Espera un momento, aún estamos conectando con el Estado."); return; }
+      const emp = obtenerActiva();
+      const nombre = (localStorage.getItem("occasus_jugador") || prompt("¿Cuál es tu nombre exacto dentro del juego?") || "").trim();
+      if (!nombre) return;
+      localStorage.setItem("occasus_jugador", nombre);
+      const cantidad = prompt(`¿Cuántas unidades de ${emp.n} quieres comprar? (precio actual: ${emp.p}$/ud)`, "10");
+      const unidades = parseInt(cantidad);
+      if (!unidades || unidades <= 0) return;
+      db.collection("pedidos").add({
+        jugador: nombre,
+        empresa: emp.id,
+        unidades: unidades,
+        procesado: false,
+        creado: firebase.firestore.FieldValue.serverTimestamp(),
+      }).then(()=>{
+        alert("¡Pedido enviado! En cuanto entres o sigas conectado al servidor, en unos segundos verás las acciones en Mi Cuenta → La Bolsa.");
+      }).catch((err)=>{
+        alert("No se pudo enviar el pedido: " + err.message);
+      });
     });
     window.addEventListener("resize", ()=>{ if (bolsaWrap.classList.contains("open")) pintarGraficaBolsa(); });
     pintarLateralBolsa(); pintarTabsBolsa(); pintarGraficaBolsa();
