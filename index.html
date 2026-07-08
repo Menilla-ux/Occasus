@@ -30,6 +30,7 @@
     max-width:1120px; margin:22px auto; background:var(--frame); border:1.5px solid var(--line);
     position:relative; z-index:1; min-height:calc(100vh - 44px);
   }
+  @media(min-width:761px){ .frame{ zoom:0.8; } }
   #dither-bg{ position:fixed; inset:0; z-index:0; width:100%; height:100%; opacity:.55; }
   .ticker-wrap{ background:#141414; border-bottom:1.5px solid var(--line); overflow:hidden; white-space:nowrap; }
   .ticker-track{ display:inline-flex; animation:tickerMove 32s linear infinite; }
@@ -176,13 +177,15 @@
   .cat-card:hover .cat-arrow{ background:var(--ink); color:#fff; transform:rotate(45deg); }
 
   /* ---------- Panel expandido (mega-menu al hacer clic en una tarjeta) ---------- */
-  #detalle-wrap{ display:none; border-bottom:1.5px solid var(--line); transform-origin:top center; }
-  #detalle-wrap.open{ display:block; animation:detalleAbrir .5s var(--bounce); }
-  #detalle-wrap.cerrando{ display:block; animation:detalleCerrar .28s var(--smooth) forwards; }
+  #detalle-wrap{ max-height:0; overflow:hidden; border-bottom:0px solid var(--line); transform-origin:top center; transition:max-height .45s var(--smooth), border-bottom-width .45s var(--smooth); }
+  #detalle-wrap.open{ border-bottom-width:1.5px; animation:detalleAbrir .5s var(--bounce); }
+  #detalle-wrap.cerrando{ border-bottom-width:0px; animation:detalleCerrar .4s var(--smooth) forwards; }
   @keyframes detalleAbrir{ 0%{ opacity:0; transform:scaleY(.82) translateY(-10px);} 100%{ opacity:1; transform:scaleY(1) translateY(0);} }
-  @keyframes detalleCerrar{ 0%{ opacity:1; transform:scale(1);} 100%{ opacity:0; transform:scale(.94) translateY(-8px);} }
-  #info-wrap{ display:none; border-bottom:1.5px solid var(--line); }
-  #info-wrap.open{ display:block; }
+  @keyframes detalleCerrar{ 0%{ opacity:1; transform:scaleY(1) translateY(0);} 100%{ opacity:0; transform:scaleY(.82) translateY(-10px);} }
+  #info-wrap{ max-height:0; overflow:hidden; border-bottom:0px solid var(--line); transform-origin:top center; transition:max-height .45s var(--smooth), border-bottom-width .45s var(--smooth); }
+  #info-wrap.open{ border-bottom-width:1.5px; animation:detalleAbrir .5s var(--bounce); }
+  #info-wrap.cerrando{ border-bottom-width:0px; animation:detalleCerrar .4s var(--smooth) forwards; }
+
   #info-inner{ padding:8px 32px 26px; }
   .info-desc{ font-size:12.5px; color:var(--muted); line-height:1.6; margin:4px 0 16px; max-width:520px; }
   .info-nota{ font-size:11.5px; color:var(--muted); background:#FAFAF8; border:1px solid var(--line-soft); border-radius:6px; padding:12px 14px; margin-top:16px; }
@@ -196,95 +199,6 @@
   .estado-item .v{ font-family:var(--font-mono); font-size:13px; font-weight:700; }
   @media(max-width:760px){ .estado-grid{ grid-template-columns:1fr; } .estado-item{ border-right:none; } }
 
-  /* ================= La Bolsa (nueva sección) ================= */
-  #bolsa-wrap{ display:none; border-bottom:1.5px solid var(--line); transform-origin:top center; }
-  #bolsa-wrap.open{ display:block; animation:detalleAbrir .5s var(--bounce); }
-  #bolsa-wrap.cerrando{ display:block; animation:detalleCerrar .28s var(--smooth) forwards; }
-  .bolsa-sub{ font-size:12.5px; color:var(--muted); line-height:1.6; margin:4px 32px 0; max-width:520px; }
-  .bolsa-live-badge{ display:flex; align-items:center; gap:6px; font-family:var(--font-mono); font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); border:1.5px solid var(--line); border-radius:16px; padding:5px 11px; margin-right:auto; margin-left:14px; }
-  .bolsa-live-badge .p{ width:6px; height:6px; border-radius:50%; background:#E8B23A; }
-  .bolsa-live-badge.ok .p{ background:#1E8E5A; }
-  .bolsa-cargando{ padding:24px 20px; text-align:center; color:var(--muted); font-size:12.5px; }
-  .bolsa-stats-row{ display:grid; grid-template-columns:repeat(3,1fr); border-top:1.5px solid var(--line); border-bottom:1.5px solid var(--line); margin-top:18px; }
-  .bolsa-stats-row > div{ padding:18px 26px; border-right:1.5px solid var(--line); }
-  .bolsa-stats-row > div:last-child{ border-right:none; }
-  .bolsa-stats-row .label{ font-size:10.5px; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; font-weight:700; margin-bottom:8px; }
-  .bolsa-stats-row .value{ font-family:var(--font-mono); font-size:26px; font-weight:700; }
-  .slider-track{ width:100%; max-width:180px; height:4px; background:var(--line-soft); border-radius:2px; position:relative; margin-top:10px; }
-  .slider-fill{ position:absolute; left:0; top:0; height:100%; background:var(--accent); border-radius:2px; }
-  .slider-dot{ position:absolute; top:50%; width:9px; height:9px; background:var(--accent); border-radius:50%; transform:translate(-50%,-50%); box-shadow:0 0 0 4px var(--accent-soft); }
-  .slider-range{ display:flex; justify-content:space-between; font-size:9.5px; color:var(--muted-2); margin-top:6px; font-family:var(--font-mono); max-width:180px; }
-
-  .bolsa-layout{ display:grid; grid-template-columns:230px 1fr; border-bottom:1.5px solid var(--line); }
-  .side-cards{ border-right:1.5px solid var(--line); display:flex; flex-direction:column; max-height:420px; overflow-y:auto; }
-  .side-card{ padding:15px 20px; border-bottom:1.5px solid var(--line-soft); cursor:pointer; transition:background .2s; }
-  .side-card:last-child{ border-bottom:none; }
-  .side-card:hover{ background:#FAFAF8; }
-  .side-card.active{ background:var(--accent-soft); }
-  .side-card .top{ display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
-  .side-card .tag{ font-family:var(--font-mono); font-size:9.5px; font-weight:700; border:1px solid var(--line-soft); border-radius:3px; padding:2px 7px; color:var(--muted); }
-  .side-card .name{ font-size:12px; font-weight:700; margin-bottom:8px; line-height:1.3; }
-  .side-card .price-row{ display:flex; align-items:center; justify-content:space-between; }
-  .side-card .price{ font-family:var(--font-mono); font-size:18px; font-weight:700; }
-  .side-card .chg{ font-family:var(--font-mono); font-size:10.5px; font-weight:700; padding:3px 8px; border-radius:10px; }
-  .side-card .chg.up{ background:#E9F8EF; color:#1E8E5A; }
-  .side-card .chg.down{ background:#FBE9E7; color:#D14343; }
-
-  .main-panel{ padding:20px 24px 6px; position:relative; }
-  .main-top{ display:flex; align-items:center; gap:8px; margin-bottom:14px; flex-wrap:wrap; }
-  #bolsa-titulo-activa{ font-family:var(--font-mono); font-size:14px; font-weight:700; }
-  #bolsa-titulo-activa .id{ color:var(--accent); margin-right:8px; }
-  .main-top .spacer{ flex:1; }
-  .icon-btn{ width:30px; height:30px; border-radius:50%; border:1.5px solid var(--line); background:transparent; color:var(--ink); cursor:pointer; font-size:13px; }
-
-  #bolsa-chart-wrap{ position:relative; height:260px; }
-  #bolsa-chart-canvas{ width:100%; height:100%; display:block; }
-  .chart-labels{ display:flex; justify-content:space-between; font-size:10.5px; color:var(--muted); padding:8px 4px 16px; font-family:var(--font-mono); }
-
-  .chart-dot{
-    position:absolute; width:9px; height:9px; border-radius:50%; background:var(--accent); border:2px solid #fff;
-    box-shadow:0 0 0 3px var(--accent-soft), 0 2px 6px rgba(0,0,0,.2);
-    opacity:0; transition:opacity .2s; pointer-events:none; transform:translate(-50%,-50%);
-  }
-  .chart-dot.show{ opacity:1; }
-  .tooltip-card{
-    position:absolute; width:140px; color:var(--ink);
-    opacity:0; pointer-events:none; transition:opacity .2s, transform .25s var(--smooth); transform:translateY(4px);
-  }
-  .tooltip-card.show{ opacity:1; transform:translateY(0); }
-  .tooltip-card .tdate{ font-family:var(--font-mono); font-size:10px; font-weight:700; color:var(--accent); margin-bottom:8px; text-transform:uppercase; letter-spacing:.05em; }
-  .tooltip-card .tprice{ font-family:var(--font-mono); font-size:19px; font-weight:700; margin-bottom:2px; text-shadow:0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff; }
-  .tooltip-card .tlabel{ font-size:9.5px; color:var(--muted); margin-bottom:9px; }
-
-  .bolsa-bottom-cards{ display:grid; grid-template-columns:1fr 1fr; border-bottom:1.5px solid var(--line); }
-  .bottom-card{ display:flex; align-items:center; justify-content:space-between; gap:14px; padding:18px 26px; border-right:1.5px solid var(--line); }
-  .bottom-card:last-child{ border-right:none; }
-  .bottom-card .t{ font-family:var(--font-mono); font-size:12.5px; font-weight:700; }
-  .bottom-card .s{ font-size:11px; color:var(--muted); margin-top:4px; }
-  .bottom-card button{
-    font-family:var(--font-mono); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.03em;
-    background:var(--accent); color:#fff; border:none; border-radius:16px; padding:9px 16px; cursor:pointer; white-space:nowrap;
-    transition:transform .2s var(--bounce);
-  }
-  .bottom-card button:active{ transform:scale(.93); }
-  .bottom-card.discord button{ background:var(--ink); }
-  .sync-note{ padding:16px 26px 26px; font-size:11.5px; color:var(--muted); line-height:1.65; }
-  .sync-note b{ color:var(--ink); }
-
-  @media(max-width:760px){
-    .bolsa-sub{ margin:4px 18px 0; }
-    .bolsa-stats-row{ grid-template-columns:1fr 1fr; }
-    .bolsa-stats-row > div:nth-child(2){ border-right:none; }
-    .bolsa-stats-row > div:nth-child(3){ border-right:none; border-top:1.5px solid var(--line); grid-column:span 2; }
-    .bolsa-layout{ grid-template-columns:1fr; }
-    .side-cards{ flex-direction:row; overflow-x:auto; overflow-y:visible; border-right:none; border-bottom:1.5px solid var(--line); max-height:none; }
-    .side-card{ min-width:160px; border-bottom:none; border-right:1.5px solid var(--line-soft); }
-    .main-panel{ padding:16px 18px 4px; }
-    .bolsa-bottom-cards{ grid-template-columns:1fr; }
-    .bottom-card{ border-right:none; border-bottom:1.5px solid var(--line); padding:16px 18px; }
-    .sync-note{ padding:14px 18px 20px; }
-  }
-  
   .detalle-head{ display:flex; align-items:center; justify-content:space-between; padding:18px 32px; border-bottom:1px solid var(--line-soft); }
   .detalle-head h3{ font-family:var(--font-mono); font-size:15px; margin:0; }
   .detalle-close{ width:28px; height:28px; border-radius:50%; border:1.5px solid var(--line); background:transparent; cursor:pointer; font-size:13px; }
@@ -344,29 +258,30 @@
     header{ padding:14px 18px; }
     nav{ display:none; }
     .mobile-links{ display:flex; gap:8px; padding:0 18px 18px; }
-    .hero{ padding:28px 18px 20px; }
-    .stats-row{ grid-template-columns:1fr 1fr; }
-    .stats-row > div:nth-child(2){ border-right:none; }
-    .stats-row > div:nth-child(3){ border-right:none; border-top:1.5px solid var(--line); grid-column:span 2; }
+    .hero{ padding:26px 18px 22px; }
+    .hero .sub{ max-width:none; }
+    .stats-row{ grid-template-columns:1fr; }
+    .stats-row > div{ border-right:none !important; border-bottom:1.5px solid var(--line); padding:16px 18px; }
+    .stats-row > div:last-child{ border-bottom:none; }
     .destacada-wrap, .filtro-row, .cta{ padding-left:18px; padding-right:18px; }
+    .destacada-wrap{ padding-top:20px; padding-bottom:20px; }
     .destacada{ flex-direction:column; }
-    .destacada-stats{ flex-wrap:wrap; }
-    .destacada-stats > div{ flex:1 1 33%; min-width:0; padding:14px 12px; }
-    .destacada-main{ border-right:none; border-bottom:1.5px solid var(--line-soft); }
-    .cat-grid{ grid-template-columns:1fr; }
-    .cat-card{ border-right:none !important; min-height:auto; padding:18px; }
+    .destacada-main{ padding:18px; border-right:none; border-bottom:1.5px solid var(--line-soft); }
+    .destacada-stats{ flex-wrap:nowrap; }
+    .destacada-stats > div{ flex:1 1 33.33%; min-width:0; padding:14px 10px; text-align:center; }
+    .filtro-row{ flex-direction:column; align-items:stretch; gap:12px; padding-top:16px; padding-bottom:16px; }
     .search-wrap{ width:100%; margin-left:0; }
-    .filtro-row{ flex-direction:column; align-items:stretch; }
+    .cat-grid{ grid-template-columns:1fr; }
+    .cat-card{ border-right:none !important; min-height:auto; padding:20px 18px; }
     #detalle-inner, #search-results{ padding-left:18px; padding-right:18px; }
-    .detalle-head{ padding:14px 18px; }
+    .detalle-head{ padding:16px 18px; }
+    .cta{ padding-top:24px; padding-bottom:24px; flex-direction:column; align-items:flex-start; }
   }
 
   @media (prefers-reduced-motion: reduce){
     html{ scroll-behavior:auto; } *{ transition:none !important; animation:none !important; }
   }
 </style>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
 <canvas id="dither-bg"></canvas>
@@ -379,9 +294,9 @@
     <nav>
       <a id="nav-inicio" class="pre-scramble">Inicio</a>
       <a id="mega-trigger" class="pre-scramble">Secciones ▾</a>
-      <a id="nav-bolsa" class="pre-scramble">Bolsa</a>
       <a id="nav-anexo" class="pre-scramble">Anexo</a>
       <a id="nav-estado" href="#" class="pre-scramble">Estado</a>
+      <a id="nav-ia" href="asesor.html" class="pre-scramble">Asesor Legal</a>
     </nav>
     <div class="header-spacer"></div>
     <button class="btn-pill btn-reportar" id="btn-reportar-header">Reportar vacío</button>
@@ -404,7 +319,7 @@
   </div>
 
   <div class="mobile-links" id="mobile-links">
-    <a id="mobile-bolsa">Ver Bolsa</a><a id="mobile-anexo">Ver Anexo</a><a id="mobile-estado">El Estado</a>
+    <a id="mobile-anexo">Ver Anexo</a><a id="mobile-estado">El Estado</a><a id="mobile-ia" href="asesor.html">Asesor Legal</a>
   </div>
 
   <div class="destacada-wrap">
@@ -526,65 +441,9 @@
     <div id="info-inner"></div>
   </div>
 
-  <div id="bolsa-wrap">
-    <div class="detalle-head">
-      <h3>La Bolsa de Occasus</h3>
-      <span class="bolsa-live-badge" id="bolsa-live-badge"><span class="p"></span><span id="bolsa-live-text">Conectando...</span></span>
-      <button class="detalle-close" id="bolsa-close">✕</button>
-    </div>
-    <p class="bolsa-sub">Las 5 empresas fundacionales del Estado, su precio y su historial — misma información que verás en el Banco dentro del juego.</p>
 
-    <div class="bolsa-stats-row">
-      <div><div class="label">Capitalización total</div><div class="value" id="bolsa-stat-cap">0$</div></div>
-      <div><div class="label">Volatilidad media</div>
-        <div class="slider-track"><div class="slider-fill" id="bolsa-vol-fill"></div><div class="slider-dot" id="bolsa-vol-dot"></div></div>
-        <div class="slider-range"><span>0.5</span><span>2.5</span></div>
-      </div>
-      <div><div class="label">Unidades en circulación</div>
-        <div class="slider-track"><div class="slider-fill" id="bolsa-units-fill"></div><div class="slider-dot" id="bolsa-units-dot"></div></div>
-        <div class="slider-range"><span>0</span><span>250K</span></div>
-      </div>
-    </div>
 
-    <div class="bolsa-layout">
-      <div class="side-cards" id="bolsa-side-cards"></div>
-      <div class="main-panel">
-        <div class="main-top">
-          <div id="bolsa-titulo-activa"></div>
-          <div class="spacer"></div>
-          <button class="icon-btn" id="bolsa-zoom-out">−</button>
-          <button class="icon-btn" id="bolsa-zoom-in">+</button>
-        </div>
-        <div id="bolsa-chart-wrap">
-          <div class="chart-dot" id="bolsa-chart-dot"></div>
-          <canvas id="bolsa-chart-canvas"></canvas>
-          <div class="tooltip-card" id="bolsa-tooltip-card">
-            <div class="tdate" id="bolsa-tt-date"></div>
-            <div class="tprice" id="bolsa-tt-price"></div>
-            <div class="tlabel">Precio en esa vela</div>
-            <div class="tprice" id="bolsa-tt-units" style="font-size:13px"></div>
-            <div class="tlabel">Unidades en el mercado</div>
-          </div>
-        </div>
-        <div class="chart-labels" id="bolsa-chart-labels"></div>
-      </div>
-    </div>
 
-    <div class="bolsa-bottom-cards">
-      <div class="bottom-card">
-        <div><div class="t">Comprar acciones</div><div class="s">Se refleja en tu cuenta del juego en unos segundos</div></div>
-        <button id="bolsa-btn-comprar">Comprar</button>
-      </div>
-      <div class="bottom-card discord">
-        <div><div class="t">Habla con el Estado</div><div class="s">Dudas, sugerencias o negociar como fundador</div></div>
-        <button onclick="window.open('https://discord.com/channels/1521831734218592276/1521911230451810314','_blank')">Abrir Discord</button>
-      </div>
-    </div>
-
-    <div class="sync-note">
-      <b>Sobre estos datos:</b> esta sección muestra un ejemplo con las 5 empresas base de Occasus. La sincronización en vivo con el juego (ver Y comprar reflejado al instante) es el siguiente paso, conectando el addon a Firebase.
-    </div>
-  </div>
 
   <div id="search-results"></div>
   <div id="no-results">No se encontró ninguna ley con esa búsqueda.</div>
@@ -740,21 +599,64 @@ const PANELS = [{"n": "I", "titulo": "Orden Civil, Urbanismo y Burocracia Real",
   const detalleTitulo = document.getElementById("detalle-titulo");
   const catGrid = document.getElementById("cat-grid");
 
+  function seguirDespliegueConScroll(wrapper, duracionMs){
+    const inicio = performance.now();
+    const margenInferior = 20;
+    function frame(now){
+      const t = now - inicio;
+      const rect = wrapper.getBoundingClientRect();
+      const desbordeAbajo = rect.bottom - (window.innerHeight - margenInferior);
+      if (desbordeAbajo > 1) {
+        window.scrollBy({ top: desbordeAbajo, left: 0, behavior: "instant" });
+      }
+      if (t < duracionMs) requestAnimationFrame(frame);
+      else {
+        // Ajuste final: asegurar que se ve hasta el final del panel (o de la página, si es más corta)
+        const rectFinal = wrapper.getBoundingClientRect();
+        const alturaDoc = document.documentElement.scrollHeight;
+        const objetivo = Math.min(
+          window.scrollY + (rectFinal.bottom - window.innerHeight) + margenInferior,
+          alturaDoc - window.innerHeight
+        );
+        if (objetivo > window.scrollY) window.scrollTo({ top: objetivo, behavior: "smooth" });
+      }
+    }
+    requestAnimationFrame(frame);
+  }
+  function abrirPanelAnimado(wrapper){
+    wrapper.classList.remove("cerrando");
+    wrapper.style.transition = "none";
+    wrapper.style.maxHeight = "none";
+    const alturaReal = wrapper.scrollHeight;
+    wrapper.style.maxHeight = "0px";
+    wrapper.offsetHeight; // forzar reflow antes de restaurar la transición
+    wrapper.style.transition = "";
+    requestAnimationFrame(()=>{
+      wrapper.classList.add("open");
+      wrapper.style.maxHeight = alturaReal + "px";
+      seguirDespliegueConScroll(wrapper, 520);
+    });
+  }
+  function cerrarPanelAnimado(wrapper){
+    if (!wrapper.classList.contains("open")) return;
+    wrapper.style.maxHeight = wrapper.scrollHeight + "px";
+    wrapper.offsetHeight;
+    wrapper.classList.remove("open");
+    wrapper.classList.add("cerrando");
+    requestAnimationFrame(()=> requestAnimationFrame(()=>{ wrapper.style.maxHeight = "0px"; }));
+    setTimeout(()=>{ wrapper.classList.remove("cerrando"); wrapper.style.maxHeight = ""; }, 460);
+  }
+
   function abrirDetalle(idx){
     const s = PANELS[idx];
-    infoWrap.classList.remove("open"); cerrarBolsa();
+    cerrarInfo();
     detalleTitulo.textContent = "Sección " + s.n + " — " + s.titulo;
     detalleInner.innerHTML = renderLeyesHtml(s.leyes);
-    detalleWrap.classList.remove("cerrando");
-    detalleWrap.classList.add("open");
+    abrirPanelAnimado(detalleWrap);
     animarEntradaLeyes(detalleInner);
-    detalleWrap.scrollIntoView({behavior:"smooth", block:"nearest"});
   }
   function cerrarDetalle(){
-    if (!detalleWrap.classList.contains("open")) return;
-    detalleWrap.classList.remove("open");
-    detalleWrap.classList.add("cerrando");
-    setTimeout(()=> detalleWrap.classList.remove("cerrando"), 300);
+    cerrarPanelAnimado(detalleWrap);
   }
   catGrid.querySelectorAll(".cat-card").forEach(card=>{
     card.addEventListener("click", ()=> abrirDetalle(Number(card.dataset.idx)));
@@ -858,7 +760,7 @@ const PANELS = [{"n": "I", "titulo": "Orden Civil, Urbanismo y Burocracia Real",
   search.addEventListener("input", ()=>{ renderOverlay(search.value); buscar(); });
 
   document.getElementById("nav-inicio").addEventListener("click", ()=>{
-    search.value=""; buscar(); cerrarDetalle(); infoWrap.classList.remove("open"); bolsaWrap.classList.remove("open");
+    search.value=""; buscar(); cerrarDetalle(); cerrarInfo();
     window.scrollTo({top:0, behavior:"smooth"});
   });
 
@@ -897,18 +799,18 @@ const PANELS = [{"n": "I", "titulo": "Orden Civil, Urbanismo y Burocracia Real",
   })();
 
   function mostrarAnexo(){
-    cerrarDetalle(); cerrarBolsa();
+    cerrarDetalle();
     infoTitulo.textContent = "Anexo I — Modpack Oficial Reconocido";
     infoInner.innerHTML = `
       <p class="info-desc">Lista de referencia para la Ley de la Pureza Visual (art. 41). Todo paquete de recursos o comportamiento no incluido aquí se considera no autorizado dentro de Occasus.</p>
       <div class="mods-grid">${MODS_OFICIALES.map(m=>`<div class="mod-chip">${escapeHtml(m)}</div>`).join("")}</div>
       <p class="info-nota"><b>Nota de vigencia:</b> este anexo se actualiza cada vez que el Estado incorpora o retira un mod oficial. La versión vigente es siempre la última publicada por la administración del servidor.</p>`;
-    infoWrap.classList.add("open");
-    infoWrap.scrollIntoView({behavior:"smooth", block:"nearest"});
+    abrirPanelAnimado(infoWrap);
+    animarEntradaChips();
   }
 
   function mostrarEstado(){
-    cerrarDetalle(); cerrarBolsa();
+    cerrarDetalle();
     infoTitulo.textContent = "El Estado de Occasus";
     infoInner.innerHTML = `
       <div class="estado-grid">
@@ -920,211 +822,29 @@ const PANELS = [{"n": "I", "titulo": "Orden Civil, Urbanismo y Burocracia Real",
         <div class="estado-item"><span class="l">Tribunal Supremo</span><span class="v">Activo — juzga todo conflicto (art. 31)</span></div>
       </div>
       <p class="info-nota">Esta página se actualizará según avance el Estado — nuevos cargos, fechas y decretos se irán añadiendo aquí.</p>`;
-    infoWrap.classList.add("open");
-    infoWrap.scrollIntoView({behavior:"smooth", block:"nearest"});
+    abrirPanelAnimado(infoWrap);
+    animarEntradaChips();
+  }
+  function animarEntradaChips(){
+    infoInner.querySelectorAll(".mod-chip, .estado-item").forEach((el,i)=>{
+      el.style.opacity = "0"; el.style.transform = "translateY(6px) scale(.95)";
+      el.style.transition = "opacity .35s var(--smooth), transform .35s var(--bounce)";
+      setTimeout(()=>{ el.style.opacity = "1"; el.style.transform = "translateY(0) scale(1)"; }, 40 + i*26);
+    });
+  }
+  function cerrarInfo(){
+    cerrarPanelAnimado(infoWrap);
   }
 
   document.getElementById("nav-anexo").addEventListener("click", mostrarAnexo);
   document.getElementById("nav-estado").addEventListener("click", (e)=>{ e.preventDefault(); mostrarEstado(); });
   document.getElementById("mobile-anexo").addEventListener("click", mostrarAnexo);
   document.getElementById("mobile-estado").addEventListener("click", mostrarEstado);
-  document.getElementById("info-close").addEventListener("click", ()=> infoWrap.classList.remove("open"));
+  document.getElementById("info-close").addEventListener("click", cerrarInfo);
 
-  /* ---------- La Bolsa: conexión real a Firebase ---------- */
-  const bolsaWrap = document.getElementById("bolsa-wrap");
-  const firebaseConfig = {
-    apiKey: "AIzaSyDfyLMGijXOHTbLkoryrXA4E4rpyQ54U_0",
-    authDomain: "occasus-bolsa.firebaseapp.com",
-    projectId: "occasus-bolsa",
-    storageBucket: "occasus-bolsa.firebasestorage.app",
-    messagingSenderId: "168415013629",
-    appId: "1:168415013629:web:7daeeb3e6a92c3bc29ec94",
-  };
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-  let EMPRESAS_EJEMPLO = [];
-  let bolsaDatosListos = false;
 
-  db.collection("empresas").onSnapshot((snap)=>{
-    const lista = [];
-    snap.forEach(docu=>{
-      const d = docu.data();
-      if (d.activa === false) return; // quebrada, ya no se muestra
-      if (typeof d.p !== "number" || typeof d.u !== "number" || !d.n) return; // documento incompleto, se ignora
-      lista.push({ id: docu.id, n: d.n, p: d.p, u: d.u, h: (d.h && d.h.length) ? d.h : [d.p] });
-    });
-    lista.sort((a,b)=> (a.n||"").localeCompare(b.n||""));
-    EMPRESAS_EJEMPLO = lista;
-    bolsaDatosListos = true;
-    const badge = document.getElementById("bolsa-live-badge");
-    const texto = document.getElementById("bolsa-live-text");
-    if (badge) badge.classList.add("ok");
-    if (texto) texto.textContent = EMPRESAS_EJEMPLO.length + " empresas en vivo";
-    if (bolsaWrap.classList.contains("open")){
-      pintarLateralBolsa(); pintarTabsBolsa(); pintarGraficaBolsa();
-    }
-  }, (err)=>{
-    console.error("Firestore:", err);
-    const texto = document.getElementById("bolsa-live-text");
-    if (texto) texto.textContent = "Sin conexión";
-  });
 
-  let bolsaInicializada = false;
-  let activaBolsaId = null;
-  let puntosPxBolsa = [];
-  let escalaBolsa = 1;
 
-  function obtenerActiva(){
-    if (!EMPRESAS_EJEMPLO.length) return null;
-    const encontrada = EMPRESAS_EJEMPLO.find(e=>e.id===activaBolsaId);
-    if (encontrada) return encontrada;
-    activaBolsaId = EMPRESAS_EJEMPLO[0].id; // la anterior ya no existe (quebró) o aún no había ninguna
-    return EMPRESAS_EJEMPLO[0];
-  }
-
-  function pintarLateralBolsa(){
-    const cont = document.getElementById("bolsa-side-cards");
-    if (!EMPRESAS_EJEMPLO.length){ cont.innerHTML = `<div class="bolsa-cargando">Conectando con el Estado...</div>`; return; }
-    const activa = obtenerActiva();
-    cont.innerHTML = "";
-    EMPRESAS_EJEMPLO.forEach((e)=>{
-      const cambio = Math.round((e.h[e.h.length-1] - e.h[0]) / e.h[0] * 100);
-      const positivo = cambio >= 0;
-      const div = document.createElement("div");
-      div.className = "side-card" + (e.id===activa.id ? " active" : "");
-      div.innerHTML = `
-        <div class="top"><span class="tag">${e.id}</span></div>
-        <div class="name">${escapeHtml(e.n)}</div>
-        <div class="price-row">
-          <div class="price">${e.p.toLocaleString("es-ES")}$</div>
-          <div class="chg ${positivo?'up':'down'}">${positivo?'+':''}${cambio}%</div>
-        </div>`;
-      div.addEventListener("click", ()=>{ activaBolsaId = e.id; pintarLateralBolsa(); pintarTabsBolsa(); pintarGraficaBolsa(); });
-      cont.appendChild(div);
-    });
-  }
-  function pintarTabsBolsa(){
-    const cont = document.getElementById("bolsa-titulo-activa");
-    const e = obtenerActiva();
-    if (!e){ cont.innerHTML = ""; return; }
-    cont.innerHTML = `<span class="id">${e.id}</span>${escapeHtml(e.n)}`;
-  }
-  function pintarGraficaBolsa(){
-    const e = obtenerActiva();
-    if (!e) return;
-    const canvas = document.getElementById("bolsa-chart-canvas");
-    const ctx = canvas.getContext("2d");
-    const rect = canvas.parentElement.getBoundingClientRect();
-    canvas.width = rect.width; canvas.height = rect.height;
-    const W = canvas.width, H = canvas.height, pad = 18;
-    const datos = e.h;
-    const min = Math.min(...datos), max = Math.max(...datos);
-    const rango = ((max - min) || 1) / escalaBolsa;
-    const centro = (max+min)/2;
-    const minV = centro - rango/2, maxV = centro + rango/2;
-    puntosPxBolsa = datos.map((v,i)=>({
-      x: pad + (i/(datos.length-1)) * (W-pad*2),
-      y: pad + (1 - (v-minV)/(maxV-minV || 1)) * (H-pad*2),
-      v
-    }));
-    ctx.clearRect(0,0,W,H);
-    const grad = ctx.createLinearGradient(0,0,0,H);
-    grad.addColorStop(0, "rgba(255,90,46,.22)"); grad.addColorStop(1, "rgba(255,90,46,0)");
-    ctx.beginPath(); ctx.moveTo(puntosPxBolsa[0].x, H-pad);
-    puntosPxBolsa.forEach(p=> ctx.lineTo(p.x, p.y));
-    ctx.lineTo(puntosPxBolsa[puntosPxBolsa.length-1].x, H-pad);
-    ctx.closePath(); ctx.fillStyle = grad; ctx.fill();
-    ctx.beginPath();
-    puntosPxBolsa.forEach((p,i)=> i===0 ? ctx.moveTo(p.x,p.y) : ctx.lineTo(p.x,p.y));
-    ctx.strokeStyle = "#FF5A2E"; ctx.lineWidth = 2.2; ctx.lineJoin="round"; ctx.stroke();
-    const labels = document.getElementById("bolsa-chart-labels");
-    labels.innerHTML = "";
-    for (let i=0;i<=6;i++){
-      const idx = Math.round(i/6*(datos.length-1));
-      const span = document.createElement("span"); span.textContent = "Día " + (idx+1);
-      labels.appendChild(span);
-    }
-  }
-  function inicializarBolsa(){
-    if (bolsaInicializada) return;
-    bolsaInicializada = true;
-
-    const canvas = document.getElementById("bolsa-chart-canvas");
-    const tooltip = document.getElementById("bolsa-tooltip-card");
-    const chartDot = document.getElementById("bolsa-chart-dot");
-    canvas.addEventListener("mousemove", (ev)=>{
-      if (!puntosPxBolsa.length) return;
-      const rect = canvas.getBoundingClientRect();
-      const mx = ev.clientX - rect.left;
-      let cercano = puntosPxBolsa[0], distMin = Infinity;
-      puntosPxBolsa.forEach(p=>{ const d = Math.abs(p.x-mx); if (d<distMin){ distMin=d; cercano=p; } });
-      const emp = obtenerActiva();
-      document.getElementById("bolsa-tt-date").textContent = "Día " + (puntosPxBolsa.indexOf(cercano)+1);
-      document.getElementById("bolsa-tt-price").textContent = cercano.v.toLocaleString("es-ES") + "$";
-      document.getElementById("bolsa-tt-units").textContent = emp.u.toLocaleString("es-ES") + " ud";
-      chartDot.style.left = cercano.x + "px";
-      chartDot.style.top = cercano.y + "px";
-      chartDot.classList.add("show");
-      const arribaDelPunto = cercano.y > 110;
-      tooltip.style.left = Math.min(rect.width-150, Math.max(0, cercano.x-70)) + "px";
-      tooltip.style.top = (arribaDelPunto ? cercano.y-108 : cercano.y+18) + "px";
-      tooltip.classList.add("show");
-    });
-    canvas.addEventListener("mouseleave", ()=>{ tooltip.classList.remove("show"); chartDot.classList.remove("show"); });
-    document.getElementById("bolsa-zoom-in").addEventListener("click", ()=>{ escalaBolsa = Math.min(3, escalaBolsa*1.3); pintarGraficaBolsa(); });
-    document.getElementById("bolsa-zoom-out").addEventListener("click", ()=>{ escalaBolsa = Math.max(0.4, escalaBolsa/1.3); pintarGraficaBolsa(); });
-
-    const capTotal = EMPRESAS_EJEMPLO.reduce((a,e)=> a + e.p*e.u, 0);
-    animateCounter(document.getElementById("bolsa-stat-cap"), capTotal, 1000);
-    const volMedia = EMPRESAS_EJEMPLO.reduce((a,e)=>a+e.vol,0)/EMPRESAS_EJEMPLO.length;
-    const volPct = Math.min(100, (volMedia-0.5)/(2.5-0.5)*100);
-    document.getElementById("bolsa-vol-fill").style.width = volPct+"%";
-    document.getElementById("bolsa-vol-dot").style.left = volPct+"%";
-    const unitsTotal = EMPRESAS_EJEMPLO.reduce((a,e)=>a+e.u,0);
-    const unitsPct = Math.min(100, unitsTotal/250000*100);
-    document.getElementById("bolsa-units-fill").style.width = unitsPct+"%";
-    document.getElementById("bolsa-units-dot").style.left = unitsPct+"%";
-    document.getElementById("bolsa-btn-comprar").addEventListener("click", ()=>{
-      if (!EMPRESAS_EJEMPLO.length){ alert("Espera un momento, aún estamos conectando con el Estado."); return; }
-      const emp = obtenerActiva();
-      const nombre = (localStorage.getItem("occasus_jugador") || prompt("¿Cuál es tu nombre exacto dentro del juego?") || "").trim();
-      if (!nombre) return;
-      localStorage.setItem("occasus_jugador", nombre);
-      const cantidad = prompt(`¿Cuántas unidades de ${emp.n} quieres comprar? (precio actual: ${emp.p}$/ud)`, "10");
-      const unidades = parseInt(cantidad);
-      if (!unidades || unidades <= 0) return;
-      db.collection("pedidos").add({
-        jugador: nombre,
-        empresa: emp.id,
-        unidades: unidades,
-        procesado: false,
-        creado: firebase.firestore.FieldValue.serverTimestamp(),
-      }).then(()=>{
-        alert("¡Pedido enviado! En cuanto entres o sigas conectado al servidor, en unos segundos verás las acciones en Mi Cuenta → La Bolsa.");
-      }).catch((err)=>{
-        alert("No se pudo enviar el pedido: " + err.message);
-      });
-    });
-    window.addEventListener("resize", ()=>{ if (bolsaWrap.classList.contains("open")) pintarGraficaBolsa(); });
-    pintarLateralBolsa(); pintarTabsBolsa(); pintarGraficaBolsa();
-  }
-  function mostrarBolsa(){
-    cerrarDetalle(); infoWrap.classList.remove("open");
-    bolsaWrap.classList.remove("cerrando");
-    bolsaWrap.classList.add("open");
-    inicializarBolsa();
-    setTimeout(pintarGraficaBolsa, 60);
-    bolsaWrap.scrollIntoView({behavior:"smooth", block:"nearest"});
-  }
-  function cerrarBolsa(){
-    if (!bolsaWrap.classList.contains("open")) return;
-    bolsaWrap.classList.remove("open");
-    bolsaWrap.classList.add("cerrando");
-    setTimeout(()=> bolsaWrap.classList.remove("cerrando"), 300);
-  }
-  document.getElementById("nav-bolsa").addEventListener("click", mostrarBolsa);
-  document.getElementById("mobile-bolsa").addEventListener("click", mostrarBolsa);
-  document.getElementById("bolsa-close").addEventListener("click", cerrarBolsa);
 
 
   const totalLeyes = totalLeyesN;
